@@ -1,0 +1,17 @@
+# environments and caches
+/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+
+# data: raw downloads and the processed store are never committed (vendor terms; rebuild with scripts/fetch_data.py)
+/data/
+/logs/
+
+# large or row-level research outputs (summary tables in results/ are committed)
+/results/*.parquet
+/results/backtest_trades.csv
+
+# demo data is a build artefact (python scripts/build_demo.py); the live copy is on the website
+/demo/data/

@@ -1,0 +1,22 @@
+{
+ "by_tier": {
+  "arbitrage": {
+   "n": 74,
+   "median_share_stationary": 1.0,
+   "median_hl": 0.297,
+   "median_hl_iqr_ratio": 1.525
+  },
+  "quasi": {
+   "n": 35,
+   "median_share_stationary": 0.306,
+   "median_hl": 8.007,
+   "median_hl_iqr_ratio": 1.888
+  },
+  "statistical": {
+   "n": 53,
+   "median_share_stationary": 0.093,
+   "median_hl": 13.595,
+   "median_hl_iqr_ratio": 1.362
+  }
+ }
+}

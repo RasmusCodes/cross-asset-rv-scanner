@@ -1,0 +1,73 @@
+# Transaction-cost, financing and borrow assumptions. Deliberately conservative: half-spreads are wider than
+# typical quoted spreads for the size assumed, every leg pays them on entry and exit, and backtests are also run
+# with all costs doubled ("stress").
+#
+# Units: bp of traded notional unless stated. Bond tiers quote costs in bp of YIELD per leg (converted with DV01).
+
+liquidity_tiers:
+  #            half_spread  commission  impact_k (sqrt model: k * daily_vol * sqrt(size / ADV))
+  index:       {half_spread_bp: 0.0,  commission_bp: 0.0, impact_k: 0.0, tradable: false}
+  etf_mega:    {half_spread_bp: 0.5,  commission_bp: 0.3, impact_k: 0.5}
+  etf_large:   {half_spread_bp: 1.5,  commission_bp: 0.3, impact_k: 0.6}
+  etf_mid:     {half_spread_bp: 5.0,  commission_bp: 0.5, impact_k: 0.8}
+  etf_bond_ig: {half_spread_bp: 1.5,  commission_bp: 0.3, impact_k: 0.6}
+  etf_bond_hy: {half_spread_bp: 2.5,  commission_bp: 0.3, impact_k: 0.7}
+  us_large:    {half_spread_bp: 1.5,  commission_bp: 0.5, impact_k: 0.6}
+  us_mid:      {half_spread_bp: 4.0,  commission_bp: 0.5, impact_k: 0.8}
+  dev_large:   {half_spread_bp: 3.0,  commission_bp: 1.0, impact_k: 0.7}
+  em_large:    {half_spread_bp: 8.0,  commission_bp: 2.0, impact_k: 0.9}
+  fut_eq:      {half_spread_bp: 0.4,  commission_bp: 0.1, impact_k: 0.3}
+  fut_energy:  {half_spread_bp: 2.0,  commission_bp: 0.3, impact_k: 0.6}
+  fut_metal:   {half_spread_bp: 1.5,  commission_bp: 0.3, impact_k: 0.5}
+  fut_rates:   {half_spread_bp: 0.5,  commission_bp: 0.1, impact_k: 0.3}
+  fx_major:    {half_spread_bp: 1.0,  commission_bp: 0.0, impact_k: 0.2}
+  fx_em:       {half_spread_bp: 8.0,  commission_bp: 0.0, impact_k: 0.5}
+  govt_us:     {yield_half_spread_bp: 0.25, tradable: true}
+  govt_dev:    {yield_half_spread_bp: 0.5,  tradable: true}
+  tips:        {yield_half_spread_bp: 1.0,  tradable: true}
+
+# Taxes on home-market share trades (bp of notional). UK stamp duty applies to purchases of UK-incorporated
+# shares; Hong Kong stamp duty both sides; Taiwan securities transaction tax on sales; India STT on delivery
+# trades both sides; Korea securities transaction tax on sales; Swiss stamp duty both sides; French and Spanish
+# financial-transaction taxes on purchases of large domestic issuers.
+venue_taxes:
+  LSE:  {buy: 50.0, sell: 0.0}
+  HKEX: {buy: 10.0, sell: 10.0}
+  TWSE: {buy: 0.0,  sell: 30.0}
+  NSE:  {buy: 10.0, sell: 10.0}
+  KRX:  {buy: 0.0,  sell: 15.0}
+  SIX:  {buy: 7.5,  sell: 7.5}
+instrument_taxes:
+  TTE_PA: {buy: 40.0, sell: 0.0}
+  SAN_PA: {buy: 40.0, sell: 0.0}
+
+# Annual borrow fee on short positions (bp per year). `none` = not borrowable for this strategy (the leg can only
+# be held long); scanners report such opportunities as one-directional.
+borrow_tiers:
+  gc:   {fee_bp: 30.0,  available: true}
+  warm: {fee_bp: 100.0, available: true}
+  hard: {fee_bp: 500.0, available: true}
+  none: {fee_bp: .nan,  available: false}
+
+# Funding: long cash positions pay the overnight rate plus a spread; short-sale proceeds earn it minus a spread.
+funding:
+  long_spread_bp: 30.0
+  short_rebate_spread_bp: 30.0
+  futures_margin_share: 0.10      # share of notional posted as margin (earns the overnight rate)
+
+# Converting cash between currencies for non-USD legs (per conversion, on notional).
+fx_conversion_bp: {major: 1.0, em: 8.0}
+em_currencies: [MXN, BRL, ZAR, KRW, INR, CNY, TWD, THB]
+
+# Arbitrage mechanisms' own frictions (used for no-arbitrage bands).
+adr_conversion_fee_usd: 0.05      # per depositary share, creation or cancellation
+etf_creation_bp: {equity: 2.0, equity_intl: 5.0, bond: 10.0, commodity: 3.0}
+
+# Costs scale with realised volatility: multiplier = clip(vol_21d / median vol_252d, 1, 4). Spreads widen in
+# stress (bond ETFs quoted 50-100 bp wide in March 2020); a constant-cost backtest would be optimistic exactly when
+# dislocations are largest.
+stress_scaling: {window: 21, baseline: 252, floor: 1.0, cap: 4.0}
+
+# Default trade size per leg (USD notional) for impact and capacity numbers.
+default_notional_usd: 1000000
+max_adv_share: 0.05

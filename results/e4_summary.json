@@ -1,0 +1,57 @@
+{
+ "latest_window": [
+  "2023-12-28",
+  "2026-11-20"
+ ],
+ "latest_pairs": 1221,
+ "latest_raw_p05": 52,
+ "latest_raw_minp05": 127,
+ "latest_bh_q05": 1,
+ "latest_bonf05": 1,
+ "latest_johansen_rank1": 107,
+ "null_rate_eg_756": 0.055,
+ "null_rate_eg_756_drift": 0.048,
+ "rolling": {
+  "all": {
+   "windows": 15,
+   "mean_selected": 1127.2,
+   "mean_persist": 0.051
+  },
+  "bh_q05": {
+   "windows": 15,
+   "mean_selected": 2.867,
+   "mean_persist": 0.206
+  },
+  "raw_p05": {
+   "windows": 15,
+   "mean_selected": 54.267,
+   "mean_persist": 0.069
+  }
+ },
+ "oos_trading": {
+  "bh_q05": {
+   "pair_years": 43,
+   "mean_net": -5.42,
+   "median_net": 0.0,
+   "share_positive": 0.23,
+   "mean_gross": 39.5,
+   "mean_trades": 2.56
+  },
+  "random_all": {
+   "pair_years": 2226,
+   "mean_net": -66.86,
+   "median_net": 0.0,
+   "share_positive": 0.35,
+   "mean_gross": -25.13,
+   "mean_trades": 1.91
+  },
+  "raw_p05": {
+   "pair_years": 809,
+   "mean_net": -18.26,
+   "median_net": 0.0,
+   "share_positive": 0.41,
+   "mean_gross": 33.64,
+   "mean_trades": 2.84
+  }
+ }
+}

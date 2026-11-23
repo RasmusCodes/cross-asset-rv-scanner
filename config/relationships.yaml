@@ -1,0 +1,240 @@
+﻿# Curated relationships. Each one states WHY the prices should be linked and whether that link is enforceable.
+#
+# tier:
+#   arbitrage   - a contractual or creation/redemption mechanism lets a trader force convergence (net of costs);
+#   quasi       - an economic link with a convergence mechanism that cannot be forced on any timetable;
+#   statistical - co-movement with no mechanism; any signal is a statistical bet, never an arbitrage.
+#
+# Compact list formats are expanded by rvscan.scanners.catalog.
+
+etf_nav:
+  # ETF market close vs the issuer's NAV (the value of the underlying basket at its close).
+  # [etf, kind, note]
+  - [SPY,  equity,      "Same-time US close; creation/redemption keeps the premium within a few bp."]
+  - [DIA,  equity,      "Same-time US close."]
+  - [XLK,  equity,      "Same-time US close."]
+  - [XLE,  equity,      "Same-time US close."]
+  - [KRE,  equity,      "Regional banks; NAV and market both at the US close."]
+  - [KBE,  equity,      "Banks; NAV and market both at the US close."]
+  - [XOP,  equity,      "Equal-weight E&P; NAV and market both at the US close."]
+  - [XBI,  equity,      "Equal-weight biotech; NAV and market both at the US close."]
+  - [JNK,  bond,        "High-yield bonds: NAV uses evaluated bid-side bond prices that lag the market in stress."]
+  - [SPAB, bond,        "Aggregate bonds: evaluated prices."]
+  - [SPTL, bond,        "Long Treasuries: evaluated prices."]
+  - [BIL,  bond,        "T-bills: near-cash."]
+  - [GLD,  commodity,   "NAV = LBMA gold price (London afternoon), ETF closes at 16:00 New York."]
+  - [SPDW, equity_intl, "NAV struck at foreign closes, hours before the ETF's New York close (stale NAV)."]
+  - [SPEM, equity_intl, "NAV struck at Asian/EM closes: stale by up to 15 hours."]
+  - [GMF,  equity_intl, "Emerging Asia: NAV stale by 12-16 hours."]
+  - [BWX,  bond_intl,   "International Treasuries: NAV at foreign closes, in local currencies."]
+  - [EBND, bond_intl,   "EM local-currency bonds: NAV at foreign closes."]
+
+same_index_etf:
+  # Funds tracking the same index (or the same metal). Each is arbitraged to the same basket, but there is no
+  # mechanism that converts one fund into the other: quasi. Spread = log total-return ratio, de-trended for fees.
+  - [SPY, IVV, "Both track the S&P 500 (fee gap 6.5 bp/yr)."]
+  - [IVV, VOO, "Both track the S&P 500."]
+  - [SPY, VOO, "Both track the S&P 500."]
+  - [GLD, IAU, "Both hold allocated gold bullion (fee gap 15 bp/yr)."]
+  - [AGG, BND, "Aggregate bond index funds (different index providers)."]
+  - [HYG, JNK, "High-yield index funds (iBoxx vs Bloomberg indices)."]
+  - [EEM, VWO, "Emerging markets (MSCI vs FTSE: Korea classification differs)."]
+  - [SMH, SOXX, "Semiconductor funds with overlapping holdings (different indices and caps)."]
+
+futures_basis:
+  # [future, index, dividend_proxy_etf, multiplier]
+  - [ES1,  SPX, SPY, 10.0]
+  - [NQ1,  NDX, QQQ, 40.0]
+  - [RTY1, RUT, IWM, 10.0]
+  - [YM1,  DJI, DIA, 100.0]
+
+calendar:
+  # EIA contract 1-4 series (open data, to 2024-04-05). [front, next, root]
+  - [WTI1, WTI2, CL]
+  - [WTI2, WTI3, CL]
+  - [NG1,  NG2,  NG]
+  - [NG2,  NG3,  NG]
+  - [RBOB1, RBOB2, RB]
+  - [HO1,  HO2,  HO]
+
+adr:
+  # [us_line, home_line, home shares per US share, tier, convertibility note]
+  - [TSM,  2330_TW, 5,   quasi,     "Taiwan restricts creating new ADRs (foreign-investment approval); the premium can persist for years."]
+  - [UMC,  2303_TW, 5,   quasi,     "Taiwan ADR creation restrictions."]
+  - [CHT,  2412_TW, 10,  quasi,     "Taiwan ADR creation restrictions."]
+  - [TM,   7203_T,  10,  arbitrage, "Two-way convertible through the depositary (fee per ADS)."]
+  - [SONY, 6758_T,  1,   arbitrage, "Two-way convertible."]
+  - [MUFG, 8306_T,  1,   arbitrage, "Two-way convertible."]
+  - [HMC,  7267_T,  3,   arbitrage, "Two-way convertible."]
+  - [NMR,  8604_T,  1,   arbitrage, "Two-way convertible."]
+  - [BABA, 9988_HK, 8,   arbitrage, "Fungible with the Hong Kong line (conversion takes days, fee per ADS)."]
+  - [JD,   9618_HK, 2,   arbitrage, "Fungible with the Hong Kong line."]
+  - [BIDU, 9888_HK, 8,   arbitrage, "Fungible with the Hong Kong line."]
+  - [NTES, 9999_HK, 5,   arbitrage, "Fungible with the Hong Kong line."]
+  - [TCOM, 9961_HK, 1,   arbitrage, "Fungible with the Hong Kong line."]
+  - [YUMC, 9987_HK, 1,   arbitrage, "Same ordinary shares on two exchanges."]
+  - [LI,   2015_HK, 2,   arbitrage, "Fungible with the Hong Kong line."]
+  - [ZTO,  2057_HK, 1,   arbitrage, "Fungible with the Hong Kong line."]
+  - [SHEL, SHEL_L,  2,   arbitrage, "Two-way convertible (UK stamp duty on buying the London line)."]
+  - [BP,   BP_L,    6,   arbitrage, "Two-way convertible."]
+  - [HSBC, HSBA_L,  5,   arbitrage, "Two-way convertible."]
+  - [AZN,  AZN_L,   1,   arbitrage, "NYSE line converted from ADRs (2 ADS = 1 share) to directly listed ordinary shares in 2026; the vendor restated history on the 1:1 terms."]
+  - [UL,   ULVR_L,  1,   arbitrage, "Two-way convertible."]
+  - [GSK,  GSK_L,   2,   arbitrage, "Two-way convertible."]
+  - [DEO,  DGE_L,   4,   arbitrage, "Two-way convertible."]
+  - [RIO,  RIO_L,   1,   arbitrage, "Two-way convertible (Rio Tinto plc)."]
+  - [BTI,  BATS_L,  1,   arbitrage, "Two-way convertible."]
+  - [NGG,  NG_L,    5,   arbitrage, "Two-way convertible."]
+  - [ASML, ASML_AS, 1,   arbitrage, "New York registry shares, fungible with Amsterdam."]
+  - [SAP,  SAP_DE,  1,   arbitrage, "Two-way convertible."]
+  - [NVO,  NOVO_B_CO, 1, arbitrage, "Two-way convertible."]
+  - [TTE,  TTE_PA,  1,   arbitrage, "Two-way convertible (French FTT on buying the Paris line)."]
+  - [SNY,  SAN_PA,  0.5, arbitrage, "Two-way convertible (2 ADS = 1 share)."]
+  - [ING,  INGA_AS, 1,   arbitrage, "Two-way convertible."]
+  - [NVS,  NOVN_SW, 1,   arbitrage, "Two-way convertible."]
+  - [UBS,  UBSG_SW, 1,   arbitrage, "Same registered shares in New York and Zurich."]
+  - [ERIC, ERIC_B_ST, 1, arbitrage, "Two-way convertible."]
+  - [INFY, INFY_NS, 1,   quasi,     "Indian foreign-ownership limits make two-way fungibility partial; local shares cannot be shorted by foreign investors."]
+  - [HDB,  HDFCBANK_NS, 3, quasi,   "Foreign-ownership headroom limits conversion; persistent ADR premium."]
+  - [IBN,  ICICIBANK_NS, 2, quasi,  "Foreign-ownership limits; persistent ADR premium."]
+  - [WIT,  WIPRO_NS, 1,  quasi,     "Foreign-ownership limits."]
+  - [BHP,  BHP_AX,  2,   arbitrage, "Two-way convertible."]
+  - [KB,   105560_KS, 1, quasi,     "Korean won is not deliverable offshore; conversion and FX controls."]
+  - [SHG,  055550_KS, 1, quasi,     "Korean FX controls."]
+  - [VALE, VALE3_SA, 1,  arbitrage, "Two-way convertible (Brazil FX registration)."]
+  - [ITUB, ITUB4_SA, 1,  arbitrage, "Two-way convertible (preferred shares)."]
+  - [AMX,  AMXB_MX, 20,  arbitrage, "Two-way convertible."]
+
+interlisted:
+  # Same share listed in Toronto and New York: fully fungible through cross-border settlement.
+  - [RY, RY_TO]
+  - [TD, TD_TO]
+  - [BNS, BNS_TO]
+  - [BMO, BMO_TO]
+  - [CM, CM_TO]
+  - [ENB, ENB_TO]
+  - [CNQ, CNQ_TO]
+  - [SU, SU_TO]
+  - [CNI, CNR_TO]
+  - [CP, CP_TO]
+  - [SHOP, SHOP_TO]
+  - [TRI, TRI_TO]
+
+share_class:
+  # [line_a, line_b, shares of b per share of a, tier, note]
+  - [BRK_A, BRK_B, 1500, arbitrage, "Class A converts into 1,500 class B at any time (one way only): B cannot trade above A/1500 by more than costs; A can trade at a premium."]
+  - [GOOGL, GOOG, 1, quasi, "Voting (A) and non-voting (C) Alphabet shares; identical economics, no conversion."]
+  - [FOXA, FOX, 1, quasi, "Non-voting A vs voting B; no conversion."]
+  - [NWSA, NWS, 1, quasi, "Non-voting A vs voting B; no conversion."]
+  - [LEN, LEN_B, 1, quasi, "Lennar A vs B (B has 10 votes); no conversion."]
+  - [BF_B, BF_A, 1, quasi, "Brown-Forman B (non-voting) vs A (voting); no conversion."]
+  - [HEI, HEI_A, 1, quasi, "HEICO common vs class A (1/10 vote); no conversion."]
+  - [UAA, UA, 1, quasi, "Under Armour A (voting) vs C (non-voting); no conversion."]
+  - [ZG, Z, 1, quasi, "Zillow A (voting) vs C (non-voting); no conversion."]
+
+dual_listed:
+  # Dual-listed company structures: two separate legal entities with equalised economics, no conversion.
+  - [RIO_L, RIO_AX, 1, "Rio Tinto plc (London) vs Rio Tinto Ltd (Sydney): equalisation agreement, no conversion; Australian franking credits support a persistent premium for Ltd."]
+
+fx_triangular:
+  # Cross rate from the ECB fixing vs the cross implied by Fed H.10 noon rates (both official, 6 hours apart).
+  - [ECB_EURJPY, EUR, JPY]
+  - [ECB_EURGBP, EUR, GBP]
+  - [ECB_EURCHF, EUR, CHF]
+
+fx_adjusted:
+  # US-listed country ETF vs its home index converted to USD at the H.10 noon rate. [etf, index, ccy, note]
+  - [EWJ, NKY,  JPY, "MSCI Japan vs Nikkei 225: different index definitions, 14-hour time gap."]
+  - [EWG, DAX,  EUR, "MSCI Germany vs DAX (DAX is a total-return index)."]
+  - [EWU, UKX,  GBP, "MSCI UK vs FTSE 100."]
+  - [FEZ, SX5E, EUR, "SPDR EURO STOXX 50 vs EURO STOXX 50 (same index, 6-hour gap)."]
+  - [EWC, TSX,  CAD, "MSCI Canada vs S&P/TSX Composite (same close time)."]
+  - [EWA, AS51, AUD, "MSCI Australia vs S&P/ASX 200 (16-hour gap)."]
+  - [EWH, HSI,  HKD, "MSCI Hong Kong vs Hang Seng (13-hour gap)."]
+
+commodity_spreads:
+  # [id, kind, legs, note]
+  - [CRACK_321, crack, [RBOB1, HO1, WTI1], "3-2-1 crack: refining margin (2 RBOB + 1 heating oil - 3 WTI, $/bbl)."]
+  - [WTI_BRENT, location, [WTI_SPOT, BRENT_SPOT], "WTI Cushing vs Brent spot: pipeline / export capacity links them."]
+  - [CL_BZ_FUT, location, [CL1Y, BZ1Y], "WTI vs Brent front futures (Yahoo continuous)."]
+  - [GLD_GC, metal_etf, [GLD, GC1], "GLD vs gold futures: GLD holds bullion, the future embeds financing."]
+  - [USO_CL, roll_etf, [USO, WTI1], "USO holds front-month WTI futures; it bleeds roll yield in contango."]
+
+index_rv:
+  # Equity index relative value through tradable ETFs (statistical: no convergence mechanism).
+  - [QQQ, SPY]
+  - [IWM, SPY]
+  - [DIA, SPY]
+  - [EFA, SPY]
+  - [EEM, EFA]
+  - [EZU, EFA]
+  - [EWJ, EFA]
+
+sector_pairs:
+  - [XLY, XLP, "Consumer discretionary vs staples."]
+  - [XLU, XLRE, "Utilities vs real estate (rate-sensitive)."]
+  - [XLE, XOP, "Integrated energy vs E&P."]
+  - [OIH, XOP, "Oil services vs E&P."]
+  - [KRE, KBE, "Regional banks vs banks (overlapping holdings)."]
+  - [XLF, KBE, "Financials vs banks."]
+  - [GDX, GDXJ, "Gold miners vs junior miners."]
+  - [IBB, XBI, "Biotech cap-weighted vs equal-weighted."]
+  - [ITB, XHB, "Home construction vs homebuilders."]
+  - [XLB, XME, "Materials vs metals & mining."]
+  - [XLI, XLB, "Industrials vs materials."]
+  - [XLK, XLC, "Technology vs communication services."]
+  - [KO, PEP, "Coca-Cola vs PepsiCo."]
+  - [XOM, CVX, "Exxon vs Chevron."]
+  - [V, MA, "Visa vs Mastercard."]
+  - [HD, LOW, "Home Depot vs Lowe's."]
+  - [UPS, FDX, "UPS vs FedEx."]
+  - [GS, MS, "Goldman vs Morgan Stanley."]
+  - [JPM, BAC, "JPMorgan vs Bank of America."]
+  - [WMT, TGT, "Walmart vs Target."]
+  - [T, VZ, "AT&T vs Verizon."]
+
+bond_spreads:
+  # [id, kind, legs, weights (DV01 units, + = long the spread), tier, note]
+  - [UST_2S10S, curve, [UST_10Y, UST_2Y], [1, -1], statistical, "US 2s10s curve (yield spread, bp)."]
+  - [UST_5S30S, curve, [UST_30Y, UST_5Y], [1, -1], statistical, "US 5s30s curve."]
+  - [UST_2S5S10S, fly, [UST_5Y, UST_2Y, UST_10Y], [1, -0.5, -0.5], statistical, "US 2s5s10s butterfly: 2 x 5y - 2y - 10y."]
+  - [UST_5S10S30S, fly, [UST_10Y, UST_5Y, UST_30Y], [1, -0.5, -0.5], statistical, "US 5s10s30s butterfly."]
+  - [UST_BUND_10Y, cross, [UST_10Y, BUND_10Y], [1, -1], statistical, "US 10y vs German 10y (FX-hedged)."]
+  - [UST_JGB_10Y, cross, [UST_10Y, JGB_10Y], [1, -1], statistical, "US 10y vs Japan 10y."]
+  - [UST_GILT_10Y, cross, [UST_10Y, GILT_10Y], [1, -1], statistical, "US 10y vs UK 10y (gilt zero-coupon)."]
+  - [UST_CGB_10Y, cross, [UST_10Y, CGB_10Y], [1, -1], statistical, "US 10y vs Canada 10y."]
+  - [UST_ACGB_10Y, cross, [UST_10Y, ACGB_10Y], [1, -1], statistical, "US 10y vs Australia 10y."]
+  - [BUND_2S10S, curve, [BUND_10Y, BUND_2Y], [1, -1], statistical, "German 2s10s curve."]
+  - [EA_SOV_SPREAD_10Y, credit, [EA_ALL_10Y, EA_AAA_10Y], [1, -1], statistical, "Euro-area all-issuer minus AAA 10y: sovereign risk premium."]
+  - [BEI_10Y, inflation, [UST_10Y, TIPS_10Y], [1, -1], statistical, "10y breakeven inflation (nominal - TIPS)."]
+  - [BEI_5Y, inflation, [UST_5Y, TIPS_5Y], [1, -1], statistical, "5y breakeven inflation."]
+  - [IT_DE_10Y, credit, [IT_10Y_M, DE_10Y_M], [1, -1], statistical, "BTP-Bund 10y (monthly)."]
+  - [ES_DE_10Y, credit, [ES_10Y_M, DE_10Y_M], [1, -1], statistical, "Bonos-Bund 10y (monthly)."]
+  - [FR_DE_10Y, credit, [FR_10Y_M, DE_10Y_M], [1, -1], statistical, "OAT-Bund 10y (monthly)."]
+  - [PT_DE_10Y, credit, [PT_10Y_M, DE_10Y_M], [1, -1], statistical, "Portugal-Bund 10y (monthly)."]
+  - [GR_DE_10Y, credit, [GR_10Y_M, DE_10Y_M], [1, -1], statistical, "Greece-Bund 10y (monthly)."]
+  - [BAA_AAA, credit, [MOODY_BAA, MOODY_AAA], [1, -1], statistical, "Moody's Baa minus Aaa (corporate quality spread)."]
+  - [BAA_UST10, credit, [MOODY_BAA, UST_10Y], [1, -1], statistical, "Moody's Baa minus 10y Treasury."]
+  - [HQM_UST_10Y, credit, [HQM_10Y, GS10_M], [1, -1], statistical, "Treasury HQM high-grade corporate 10y minus Treasury 10y (monthly)."]
+  - [HY_IG_OAS, credit, [ICE_HY_OAS, ICE_IG_OAS], [1, -1], statistical, "High-yield minus investment-grade OAS (3 years of data)."]
+
+etf_credit:
+  # Credit ETF vs duration-matched Treasury ETF (statistical; the spread is the credit premium).
+  - [LQD, IEF, "IG corporates vs 7-10y Treasuries (similar duration)."]
+  - [HYG, IEI, "High yield vs 3-7y Treasuries."]
+  - [EMB, IEF, "USD EM sovereigns vs 7-10y Treasuries."]
+  - [TIP, IEF, "TIPS vs nominal Treasuries: breakeven inflation trade."]
+
+funding:
+  # Money-market spreads (bp). Monitors of funding stress; tradable only with access to the underlying markets.
+  - [SOFR_IORB, [SOFR, IORB], "SOFR minus interest on reserves: repo pressure vs the Fed's administered rate."]
+  - [EFFR_IORB, [EFFR, IORB], "Fed funds minus IORB."]
+  - [SOFR_TGCR, [SOFR, TGCR], "SOFR minus tri-party GC: cleared/bilateral repo premium."]
+  - [TBILL_SOFR, [TBILL_3M, SOFR], "3m T-bill minus SOFR: bill supply vs repo."]
+  - [CP_TBILL, [CP_FIN_3M, TBILL_3M], "90-day financial CP minus T-bill: bank funding stress."]
+  - [CPF_CPN, [CP_FIN_3M, CP_NONFIN_3M], "Financial minus non-financial CP."]
+
+fx_carry:
+  # G10 currencies vs USD; carry = 3m rate differential (OECD, lagged one month to avoid look-ahead).
+  currencies: [EUR, JPY, GBP, CHF, CAD, AUD, NZD, SEK, NOK, DKK]
+  em_currencies: [MXN, ZAR, KRW]

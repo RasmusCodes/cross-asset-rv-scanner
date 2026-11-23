@@ -1,0 +1,120 @@
+{
+ "n": 191,
+ "by_status": {
+  "no signal": 126,
+  "watch": 43,
+  "statistical signal": 11,
+  "monitor": 10,
+  "executable (not enforceable)": 1
+ },
+ "by_tier_status": {
+  "arbitrage": {
+   "executable (not enforceable)": 0,
+   "monitor": 0,
+   "no signal": 53,
+   "statistical signal": 0,
+   "watch": 21
+  },
+  "quasi": {
+   "executable (not enforceable)": 1,
+   "monitor": 5,
+   "no signal": 26,
+   "statistical signal": 0,
+   "watch": 8
+  },
+  "statistical": {
+   "executable (not enforceable)": 0,
+   "monitor": 5,
+   "no signal": 47,
+   "statistical signal": 11,
+   "watch": 14
+  }
+ },
+ "by_type_status": {
+  "adr": {
+   "executable (not enforceable)": 0,
+   "monitor": 0,
+   "no signal": 24,
+   "statistical signal": 0,
+   "watch": 21
+  },
+  "bond_spreads": {
+   "executable (not enforceable)": 0,
+   "monitor": 1,
+   "no signal": 17,
+   "statistical signal": 2,
+   "watch": 6
+  },
+  "calendar": {
+   "executable (not enforceable)": 0,
+   "monitor": 0,
+   "no signal": 5,
+   "statistical signal": 0,
+   "watch": 1
+  },
+  "carry_funding": {
+   "executable (not enforceable)": 0,
+   "monitor": 6,
+   "no signal": 5,
+   "statistical signal": 8,
+   "watch": 0
+  },
+  "commodity_curve": {
+   "executable (not enforceable)": 0,
+   "monitor": 3,
+   "no signal": 2,
+   "statistical signal": 0,
+   "watch": 0
+  },
+  "cross_listing": {
+   "executable (not enforceable)": 0,
+   "monitor": 0,
+   "no signal": 18,
+   "statistical signal": 0,
+   "watch": 4
+  },
+  "etf_nav": {
+   "executable (not enforceable)": 0,
+   "monitor": 0,
+   "no signal": 18,
+   "statistical signal": 0,
+   "watch": 0
+  },
+  "futures_basis": {
+   "executable (not enforceable)": 0,
+   "monitor": 0,
+   "no signal": 4,
+   "statistical signal": 0,
+   "watch": 0
+  },
+  "fx_rv": {
+   "executable (not enforceable)": 0,
+   "monitor": 0,
+   "no signal": 7,
+   "statistical signal": 0,
+   "watch": 3
+  },
+  "index_rv": {
+   "executable (not enforceable)": 0,
+   "monitor": 0,
+   "no signal": 7,
+   "statistical signal": 0,
+   "watch": 0
+  },
+  "same_index_etf": {
+   "executable (not enforceable)": 1,
+   "monitor": 0,
+   "no signal": 4,
+   "statistical signal": 0,
+   "watch": 3
+  },
+  "sector_pairs": {
+   "executable (not enforceable)": 0,
+   "monitor": 0,
+   "no signal": 15,
+   "statistical signal": 1,
+   "watch": 5
+  }
+ },
+ "asof": "2026-11-20"
+}

@@ -1,0 +1,167 @@
+{
+ "n_strategies": 181,
+ "by_tier": {
+  "arbitrage": {
+   "n": 74,
+   "median_sharpe": -0.404,
+   "share_positive": 0.122,
+   "median_gross_sharpe": 0.136
+  },
+  "quasi": {
+   "n": 35,
+   "median_sharpe": -0.097,
+   "share_positive": 0.457,
+   "median_gross_sharpe": 0.177
+  },
+  "statistical": {
+   "n": 72,
+   "median_sharpe": 0.025,
+   "share_positive": 0.528,
+   "median_gross_sharpe": 0.065
+  }
+ },
+ "by_type": {
+  "adr": {
+   "n": 45,
+   "median_sharpe": -0.288,
+   "share_positive": 0.356,
+   "median_trades": 224.0
+  },
+  "bond_spreads": {
+   "n": 25,
+   "median_sharpe": -0.166,
+   "share_positive": 0.32,
+   "median_trades": 52.0
+  },
+  "calendar": {
+   "n": 6,
+   "median_sharpe": -0.194,
+   "share_positive": 0.167,
+   "median_trades": 94.0
+  },
+  "carry_funding": {
+   "n": 13,
+   "median_sharpe": 0.291,
+   "share_positive": 0.923,
+   "median_trades": 43.0
+  },
+  "commodity_curve": {
+   "n": 2,
+   "median_sharpe": -0.019,
+   "share_positive": 0.5,
+   "median_trades": 63.5
+  },
+  "cross_listing": {
+   "n": 22,
+   "median_sharpe": -0.227,
+   "share_positive": 0.318,
+   "median_trades": 223.0
+  },
+  "etf_nav": {
+   "n": 18,
+   "median_sharpe": -0.574,
+   "share_positive": 0.0,
+   "median_trades": 194.0
+  },
+  "futures_basis": {
+   "n": 4,
+   "median_sharpe": -0.059,
+   "share_positive": 0.0,
+   "median_trades": 171.5
+  },
+  "fx_rv": {
+   "n": 10,
+   "median_sharpe": -0.161,
+   "share_positive": 0.3,
+   "median_trades": 303.5
+  },
+  "index_rv": {
+   "n": 7,
+   "median_sharpe": -0.011,
+   "share_positive": 0.429,
+   "median_trades": 60.0
+  },
+  "same_index_etf": {
+   "n": 8,
+   "median_sharpe": -0.4,
+   "share_positive": 0.0,
+   "median_trades": 117.0
+  },
+  "sector_pairs": {
+   "n": 21,
+   "median_sharpe": 0.034,
+   "share_positive": 0.571,
+   "median_trades": 49.0
+  }
+ },
+ "same_close_vs_base": {
+  "arbitrage": {
+   "same_close": 2.199,
+   "base": -0.404
+  },
+  "quasi": {
+   "same_close": 0.334,
+   "base": -0.097
+  },
+  "statistical": {
+   "same_close": 0.101,
+   "base": 0.025
+  }
+ },
+ "same_close_sharpe_gt1": 73,
+ "base_sharpe_gt1": 0,
+ "is_oos_rank_corr": 0.4856317769330232,
+ "oos_median_sharpe": -0.24058731809727427,
+ "top10_is_then_oos": [
+  {
+   "id": "PAIR_GDX_GDXJ",
+   "is_sharpe": 0.898,
+   "oos_sharpe": -0.011
+  },
+  {
+   "id": "CRACK_321",
+   "is_sharpe": 0.525,
+   "oos_sharpe": -0.554
+  },
+  {
+   "id": "CARRY_MXN",
+   "is_sharpe": 0.459,
+   "oos_sharpe": 0.371
+  },
+  {
+   "id": "CARRY_KRW",
+   "is_sharpe": 0.42,
+   "oos_sharpe": -0.152
+  },
+  {
+   "id": "ADR_TM",
+   "is_sharpe": 0.411,
+   "oos_sharpe": -0.334
+  },
+  {
+   "id": "ADR_HMC",
+   "is_sharpe": 0.405,
+   "oos_sharpe": -0.492
+  },
+  {
+   "id": "PAIR_IBB_XBI",
+   "is_sharpe": 0.398,
+   "oos_sharpe": 0.028
+  },
+  {
+   "id": "CARRY_GBP",
+   "is_sharpe": 0.392,
+   "oos_sharpe": 0.403
+  },
+  {
+   "id": "CARRY_CAD",
+   "is_sharpe": 0.37,
+   "oos_sharpe": 0.418
+  },
+  {
+   "id": "CARRY_SEK",
+   "is_sharpe": 0.369,
+   "oos_sharpe": 0.457
+  }
+ ]
+}

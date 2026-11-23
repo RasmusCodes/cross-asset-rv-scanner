@@ -1,0 +1,492 @@
+﻿# Instrument universe.
+#
+# Every instrument has: id (unique), src (adapter), key (symbol / series id / table column), ccy, venue (close time),
+# liq (cost tier in costs.yaml), name. Optional: unit, borrow (tier), nav (SSGA ticker for NAV history), tradable.
+# Licence comes from the source (see sources below); `vendor` series never leave this machine row by row.
+
+sources:
+  yahoo:      {license: vendor,           credit: "Yahoo Finance chart API"}
+  ssga:       {license: vendor,           credit: "State Street Global Advisors NAV history"}
+  fred_fed:   {license: public-domain,    credit: "Board of Governors of the Federal Reserve System via FRED"}
+  fred_ust:   {license: public-domain,    credit: "US Treasury via FRED"}
+  fred_oecd:  {license: open-attribution, credit: "OECD Main Economic Indicators via FRED (CC BY 4.0)"}
+  fred_nyfed: {license: open-attribution, credit: "Federal Reserve Bank of New York via FRED"}
+  fred_boe:   {license: open-attribution, credit: "Bank of England via FRED"}
+  fred_vendor: {license: vendor,          credit: "Moody's / ICE Data Indices via FRED (copyrighted)"}
+  treasury:   {license: public-domain,    credit: "US Department of the Treasury"}
+  eia:        {license: public-domain,    credit: "US Energy Information Administration"}
+  ecb:        {license: open-attribution, credit: "European Central Bank Data Portal"}
+  bundesbank: {license: open-attribution, credit: "Deutsche Bundesbank"}
+  mof:        {license: open-attribution, credit: "Ministry of Finance Japan"}
+  boc:        {license: open-attribution, credit: "Bank of Canada Valet API"}
+  rba:        {license: open-attribution, credit: "Reserve Bank of Australia"}
+  boe:        {license: open-attribution, credit: "Bank of England Database"}
+  nyfed:      {license: open-attribution, credit: "Federal Reserve Bank of New York"}
+
+# Close time of each venue / fixing (local time). Used to measure how far apart two legs' prices are in time.
+venues:
+  US:       {tz: America/New_York, close: "16:00"}
+  TSX:      {tz: America/Toronto, close: "16:00"}
+  LSE:      {tz: Europe/London, close: "16:30"}
+  XETRA:    {tz: Europe/Berlin, close: "17:30"}
+  EURONEXT: {tz: Europe/Paris, close: "17:30"}
+  CPH:      {tz: Europe/Copenhagen, close: "17:00"}
+  STO:      {tz: Europe/Stockholm, close: "17:30"}
+  SIX:      {tz: Europe/Zurich, close: "17:30"}
+  TSE:      {tz: Asia/Tokyo, close: "15:30"}
+  TWSE:     {tz: Asia/Taipei, close: "13:30"}
+  HKEX:     {tz: Asia/Hong_Kong, close: "16:10"}
+  NSE:      {tz: Asia/Kolkata, close: "15:30"}
+  ASX:      {tz: Australia/Sydney, close: "16:10"}
+  KRX:      {tz: Asia/Seoul, close: "15:30"}
+  B3:       {tz: America/Sao_Paulo, close: "17:00"}
+  BMV:      {tz: America/Mexico_City, close: "15:00"}
+  CME_EQ:   {tz: America/New_York, close: "16:00"}
+  NYMEX:    {tz: America/New_York, close: "14:30"}
+  COMEX:    {tz: America/New_York, close: "13:30"}
+  CBOT:     {tz: America/New_York, close: "15:00"}
+  FED_NOON: {tz: America/New_York, close: "12:00"}
+  ECB_FIX:  {tz: Europe/Berlin, close: "14:15"}
+  UST:      {tz: America/New_York, close: "15:30"}
+  BBK:      {tz: Europe/Berlin, close: "17:30"}
+  MOF:      {tz: Asia/Tokyo, close: "15:00"}
+  BOC:      {tz: America/Toronto, close: "16:00"}
+  RBA:      {tz: Australia/Sydney, close: "16:30"}
+  BOE:      {tz: Europe/London, close: "16:30"}
+  FIXING:   {tz: America/New_York, close: "08:00"}
+  MONTHLY:  {tz: UTC, close: "00:00"}
+
+instruments:
+  equity_index:
+    - {id: SPX,  src: yahoo, key: ^GSPC,     ccy: USD, venue: US,    liq: index, name: S&P 500}
+    - {id: NDX,  src: yahoo, key: ^NDX,      ccy: USD, venue: US,    liq: index, name: Nasdaq-100}
+    - {id: RUT,  src: yahoo, key: ^RUT,      ccy: USD, venue: US,    liq: index, name: Russell 2000}
+    - {id: DJI,  src: yahoo, key: ^DJI,      ccy: USD, venue: US,    liq: index, name: Dow Jones Industrial Average}
+    - {id: SX5E, src: yahoo, key: ^STOXX50E, ccy: EUR, venue: XETRA, liq: index, name: EURO STOXX 50}
+    - {id: DAX,  src: yahoo, key: ^GDAXI,    ccy: EUR, venue: XETRA, liq: index, name: DAX}
+    - {id: UKX,  src: yahoo, key: ^FTSE,     ccy: GBP, venue: LSE,   liq: index, name: FTSE 100}
+    - {id: NKY,  src: yahoo, key: ^N225,     ccy: JPY, venue: TSE,   liq: index, name: Nikkei 225}
+    - {id: HSI,  src: yahoo, key: ^HSI,      ccy: HKD, venue: HKEX,  liq: index, name: Hang Seng}
+    - {id: TSX,  src: yahoo, key: ^GSPTSE,   ccy: CAD, venue: TSX,   liq: index, name: S&P/TSX Composite}
+    - {id: AS51, src: yahoo, key: ^AXJO,     ccy: AUD, venue: ASX,   liq: index, name: S&P/ASX 200}
+
+  future:
+    - {id: ES1,  src: yahoo, key: ES=F,  ccy: USD, venue: CME_EQ, liq: fut_eq,     name: E-mini S&P 500 front (continuous), mult: 50}
+    - {id: NQ1,  src: yahoo, key: NQ=F,  ccy: USD, venue: CME_EQ, liq: fut_eq,     name: E-mini Nasdaq-100 front (continuous), mult: 20}
+    - {id: RTY1, src: yahoo, key: RTY=F, ccy: USD, venue: CME_EQ, liq: fut_eq,     name: E-mini Russell 2000 front (continuous), mult: 50}
+    - {id: YM1,  src: yahoo, key: YM=F,  ccy: USD, venue: CME_EQ, liq: fut_eq,     name: E-mini Dow front (continuous), mult: 5}
+    - {id: CL1Y, src: yahoo, key: CL=F,  ccy: USD, venue: NYMEX,  liq: fut_energy, name: WTI crude front (Yahoo continuous)}
+    - {id: BZ1Y, src: yahoo, key: BZ=F,  ccy: USD, venue: NYMEX,  liq: fut_energy, name: Brent crude front (Yahoo continuous)}
+    - {id: NG1Y, src: yahoo, key: NG=F,  ccy: USD, venue: NYMEX,  liq: fut_energy, name: Henry Hub gas front (Yahoo continuous)}
+    - {id: RB1Y, src: yahoo, key: RB=F,  ccy: USD, venue: NYMEX,  liq: fut_energy, name: RBOB gasoline front (Yahoo continuous)}
+    - {id: HO1Y, src: yahoo, key: HO=F,  ccy: USD, venue: NYMEX,  liq: fut_energy, name: ULSD / heating oil front (Yahoo continuous)}
+    - {id: GC1,  src: yahoo, key: GC=F,  ccy: USD, venue: COMEX,  liq: fut_metal,  name: Gold front (continuous)}
+    - {id: SI1,  src: yahoo, key: SI=F,  ccy: USD, venue: COMEX,  liq: fut_metal,  name: Silver front (continuous)}
+    - {id: HG1,  src: yahoo, key: HG=F,  ccy: USD, venue: COMEX,  liq: fut_metal,  name: Copper front (continuous)}
+    - {id: TY1,  src: yahoo, key: ZN=F,  ccy: USD, venue: CBOT,   liq: fut_rates,  name: 10-year T-note front (continuous)}
+    - {id: US1,  src: yahoo, key: ZB=F,  ccy: USD, venue: CBOT,   liq: fut_rates,  name: T-bond front (continuous)}
+    - {id: FV1,  src: yahoo, key: ZF=F,  ccy: USD, venue: CBOT,   liq: fut_rates,  name: 5-year T-note front (continuous)}
+    - {id: TU1,  src: yahoo, key: ZT=F,  ccy: USD, venue: CBOT,   liq: fut_rates,  name: 2-year T-note front (continuous)}
+    # Open-data futures: EIA NYMEX contracts 1-4 (published until 2024-04-05).
+    - {id: WTI1, src: eia, key: RCLC1, area: pet, ccy: USD, venue: NYMEX, liq: fut_energy, name: WTI crude contract 1 (EIA)}
+    - {id: WTI2, src: eia, key: RCLC2, area: pet, ccy: USD, venue: NYMEX, liq: fut_energy, name: WTI crude contract 2 (EIA)}
+    - {id: WTI3, src: eia, key: RCLC3, area: pet, ccy: USD, venue: NYMEX, liq: fut_energy, name: WTI crude contract 3 (EIA)}
+    - {id: WTI4, src: eia, key: RCLC4, area: pet, ccy: USD, venue: NYMEX, liq: fut_energy, name: WTI crude contract 4 (EIA)}
+    - {id: NG1,  src: eia, key: RNGC1, area: ng,  ccy: USD, venue: NYMEX, liq: fut_energy, name: Henry Hub gas contract 1 (EIA)}
+    - {id: NG2,  src: eia, key: RNGC2, area: ng,  ccy: USD, venue: NYMEX, liq: fut_energy, name: Henry Hub gas contract 2 (EIA)}
+    - {id: NG3,  src: eia, key: RNGC3, area: ng,  ccy: USD, venue: NYMEX, liq: fut_energy, name: Henry Hub gas contract 3 (EIA)}
+    - {id: NG4,  src: eia, key: RNGC4, area: ng,  ccy: USD, venue: NYMEX, liq: fut_energy, name: Henry Hub gas contract 4 (EIA)}
+    - {id: RBOB1, src: eia, key: EER_EPMRR_PE1_Y35NY_DPG, area: pet, ccy: USD, venue: NYMEX, liq: fut_energy, name: RBOB gasoline contract 1 (EIA)}
+    - {id: RBOB2, src: eia, key: EER_EPMRR_PE2_Y35NY_DPG, area: pet, ccy: USD, venue: NYMEX, liq: fut_energy, name: RBOB gasoline contract 2 (EIA)}
+    - {id: RBOB3, src: eia, key: EER_EPMRR_PE3_Y35NY_DPG, area: pet, ccy: USD, venue: NYMEX, liq: fut_energy, name: RBOB gasoline contract 3 (EIA)}
+    - {id: RBOB4, src: eia, key: EER_EPMRR_PE4_Y35NY_DPG, area: pet, ccy: USD, venue: NYMEX, liq: fut_energy, name: RBOB gasoline contract 4 (EIA)}
+    - {id: HO1,  src: eia, key: EER_EPD2F_PE1_Y35NY_DPG, area: pet, ccy: USD, venue: NYMEX, liq: fut_energy, name: NY Harbor No.2 heating oil contract 1 (EIA)}
+    - {id: HO2,  src: eia, key: EER_EPD2F_PE2_Y35NY_DPG, area: pet, ccy: USD, venue: NYMEX, liq: fut_energy, name: NY Harbor No.2 heating oil contract 2 (EIA)}
+    - {id: HO3,  src: eia, key: EER_EPD2F_PE3_Y35NY_DPG, area: pet, ccy: USD, venue: NYMEX, liq: fut_energy, name: NY Harbor No.2 heating oil contract 3 (EIA)}
+    - {id: HO4,  src: eia, key: EER_EPD2F_PE4_Y35NY_DPG, area: pet, ccy: USD, venue: NYMEX, liq: fut_energy, name: NY Harbor No.2 heating oil contract 4 (EIA)}
+
+  commodity:
+    - {id: WTI_SPOT,   src: eia, key: RWTC,    area: pet, ccy: USD, venue: NYMEX, liq: index, name: WTI Cushing spot}
+    - {id: BRENT_SPOT, src: eia, key: RBRTE,   area: pet, ccy: USD, venue: LSE,   liq: index, name: Brent spot}
+    - {id: HH_SPOT,    src: eia, key: RNGWHHD, area: ng,  ccy: USD, venue: NYMEX, liq: index, name: Henry Hub spot}
+    - {id: NYH_GASOLINE_SPOT, src: eia, key: EER_EPMRU_PF4_Y35NY_DPG, area: pet, ccy: USD, venue: NYMEX, liq: index, name: NY Harbor conventional gasoline spot}
+    - {id: NYH_ULSD_SPOT,     src: eia, key: EER_EPD2DXL0_PF4_Y35NY_DPG, area: pet, ccy: USD, venue: NYMEX, liq: index, name: NY Harbor ULSD spot}
+
+  etf:
+    - {id: SPY,  src: yahoo, key: SPY,  ccy: USD, venue: US, liq: etf_mega,  name: SPDR S&P 500, nav: spy}
+    - {id: IVV,  src: yahoo, key: IVV,  ccy: USD, venue: US, liq: etf_mega,  name: iShares Core S&P 500}
+    - {id: VOO,  src: yahoo, key: VOO,  ccy: USD, venue: US, liq: etf_mega,  name: Vanguard S&P 500}
+    - {id: QQQ,  src: yahoo, key: QQQ,  ccy: USD, venue: US, liq: etf_mega,  name: Invesco QQQ}
+    - {id: IWM,  src: yahoo, key: IWM,  ccy: USD, venue: US, liq: etf_mega,  name: iShares Russell 2000}
+    - {id: DIA,  src: yahoo, key: DIA,  ccy: USD, venue: US, liq: etf_large, name: SPDR Dow Jones, nav: dia}
+    - {id: EFA,  src: yahoo, key: EFA,  ccy: USD, venue: US, liq: etf_mega,  name: iShares MSCI EAFE}
+    - {id: EEM,  src: yahoo, key: EEM,  ccy: USD, venue: US, liq: etf_mega,  name: iShares MSCI Emerging Markets}
+    - {id: VWO,  src: yahoo, key: VWO,  ccy: USD, venue: US, liq: etf_large, name: Vanguard FTSE Emerging Markets}
+    - {id: SPDW, src: yahoo, key: SPDW, ccy: USD, venue: US, liq: etf_large, name: SPDR Developed World ex-US, nav: spdw}
+    - {id: SPEM, src: yahoo, key: SPEM, ccy: USD, venue: US, liq: etf_large, name: SPDR Emerging Markets, nav: spem}
+    - {id: GMF,  src: yahoo, key: GMF,  ccy: USD, venue: US, liq: etf_mid,   name: SPDR Emerging Asia Pacific, nav: gmf}
+    - {id: EWJ,  src: yahoo, key: EWJ,  ccy: USD, venue: US, liq: etf_large, name: iShares MSCI Japan}
+    - {id: EWG,  src: yahoo, key: EWG,  ccy: USD, venue: US, liq: etf_large, name: iShares MSCI Germany}
+    - {id: EWU,  src: yahoo, key: EWU,  ccy: USD, venue: US, liq: etf_large, name: iShares MSCI United Kingdom}
+    - {id: EWC,  src: yahoo, key: EWC,  ccy: USD, venue: US, liq: etf_large, name: iShares MSCI Canada}
+    - {id: EWA,  src: yahoo, key: EWA,  ccy: USD, venue: US, liq: etf_large, name: iShares MSCI Australia}
+    - {id: EWT,  src: yahoo, key: EWT,  ccy: USD, venue: US, liq: etf_large, name: iShares MSCI Taiwan}
+    - {id: EWH,  src: yahoo, key: EWH,  ccy: USD, venue: US, liq: etf_large, name: iShares MSCI Hong Kong}
+    - {id: EWZ,  src: yahoo, key: EWZ,  ccy: USD, venue: US, liq: etf_large, name: iShares MSCI Brazil}
+    - {id: FXI,  src: yahoo, key: FXI,  ccy: USD, venue: US, liq: etf_large, name: iShares China Large-Cap}
+    - {id: INDA, src: yahoo, key: INDA, ccy: USD, venue: US, liq: etf_large, name: iShares MSCI India}
+    - {id: EZU,  src: yahoo, key: EZU,  ccy: USD, venue: US, liq: etf_large, name: iShares MSCI Eurozone}
+    - {id: FEZ,  src: yahoo, key: FEZ,  ccy: USD, venue: US, liq: etf_large, name: SPDR EURO STOXX 50}
+    - {id: XLK,  src: yahoo, key: XLK,  ccy: USD, venue: US, liq: etf_mega,  name: Technology Select Sector SPDR, nav: xlk}
+    - {id: XLF,  src: yahoo, key: XLF,  ccy: USD, venue: US, liq: etf_mega,  name: Financial Select Sector SPDR}
+    - {id: XLE,  src: yahoo, key: XLE,  ccy: USD, venue: US, liq: etf_mega,  name: Energy Select Sector SPDR, nav: xle}
+    - {id: XLV,  src: yahoo, key: XLV,  ccy: USD, venue: US, liq: etf_large, name: Health Care Select Sector SPDR}
+    - {id: XLI,  src: yahoo, key: XLI,  ccy: USD, venue: US, liq: etf_large, name: Industrial Select Sector SPDR}
+    - {id: XLP,  src: yahoo, key: XLP,  ccy: USD, venue: US, liq: etf_large, name: Consumer Staples Select Sector SPDR}
+    - {id: XLY,  src: yahoo, key: XLY,  ccy: USD, venue: US, liq: etf_large, name: Consumer Discretionary Select Sector SPDR}
+    - {id: XLU,  src: yahoo, key: XLU,  ccy: USD, venue: US, liq: etf_large, name: Utilities Select Sector SPDR}
+    - {id: XLB,  src: yahoo, key: XLB,  ccy: USD, venue: US, liq: etf_large, name: Materials Select Sector SPDR}
+    - {id: XLRE, src: yahoo, key: XLRE, ccy: USD, venue: US, liq: etf_large, name: Real Estate Select Sector SPDR}
+    - {id: XLC,  src: yahoo, key: XLC,  ccy: USD, venue: US, liq: etf_large, name: Communication Services Select Sector SPDR}
+    - {id: SMH,  src: yahoo, key: SMH,  ccy: USD, venue: US, liq: etf_large, name: VanEck Semiconductor}
+    - {id: SOXX, src: yahoo, key: SOXX, ccy: USD, venue: US, liq: etf_large, name: iShares Semiconductor}
+    - {id: KRE,  src: yahoo, key: KRE,  ccy: USD, venue: US, liq: etf_large, name: SPDR S&P Regional Banking, nav: kre}
+    - {id: KBE,  src: yahoo, key: KBE,  ccy: USD, venue: US, liq: etf_mid,   name: SPDR S&P Bank, nav: kbe}
+    - {id: XOP,  src: yahoo, key: XOP,  ccy: USD, venue: US, liq: etf_large, name: SPDR S&P Oil & Gas E&P, nav: xop}
+    - {id: OIH,  src: yahoo, key: OIH,  ccy: USD, venue: US, liq: etf_mid,   name: VanEck Oil Services}
+    - {id: GDX,  src: yahoo, key: GDX,  ccy: USD, venue: US, liq: etf_large, name: VanEck Gold Miners}
+    - {id: GDXJ, src: yahoo, key: GDXJ, ccy: USD, venue: US, liq: etf_mid,   name: VanEck Junior Gold Miners}
+    - {id: IBB,  src: yahoo, key: IBB,  ccy: USD, venue: US, liq: etf_mid,   name: iShares Biotechnology}
+    - {id: XBI,  src: yahoo, key: XBI,  ccy: USD, venue: US, liq: etf_large, name: SPDR S&P Biotech, nav: xbi}
+    - {id: ITB,  src: yahoo, key: ITB,  ccy: USD, venue: US, liq: etf_mid,   name: iShares US Home Construction}
+    - {id: XHB,  src: yahoo, key: XHB,  ccy: USD, venue: US, liq: etf_mid,   name: SPDR S&P Homebuilders}
+    - {id: XME,  src: yahoo, key: XME,  ccy: USD, venue: US, liq: etf_mid,   name: SPDR S&P Metals & Mining}
+    - {id: XRT,  src: yahoo, key: XRT,  ccy: USD, venue: US, liq: etf_mid,   name: SPDR S&P Retail}
+    - {id: SHY,  src: yahoo, key: SHY,  ccy: USD, venue: US, liq: etf_bond_ig, name: iShares 1-3 Year Treasury}
+    - {id: IEI,  src: yahoo, key: IEI,  ccy: USD, venue: US, liq: etf_bond_ig, name: iShares 3-7 Year Treasury}
+    - {id: IEF,  src: yahoo, key: IEF,  ccy: USD, venue: US, liq: etf_bond_ig, name: iShares 7-10 Year Treasury}
+    - {id: TLT,  src: yahoo, key: TLT,  ccy: USD, venue: US, liq: etf_mega,    name: iShares 20+ Year Treasury}
+    - {id: SPTL, src: yahoo, key: SPTL, ccy: USD, venue: US, liq: etf_bond_ig, name: SPDR Portfolio Long Term Treasury, nav: sptl}
+    - {id: AGG,  src: yahoo, key: AGG,  ccy: USD, venue: US, liq: etf_bond_ig, name: iShares Core US Aggregate}
+    - {id: BND,  src: yahoo, key: BND,  ccy: USD, venue: US, liq: etf_bond_ig, name: Vanguard Total Bond Market}
+    - {id: SPAB, src: yahoo, key: SPAB, ccy: USD, venue: US, liq: etf_bond_ig, name: SPDR Portfolio Aggregate Bond, nav: spab}
+    - {id: LQD,  src: yahoo, key: LQD,  ccy: USD, venue: US, liq: etf_bond_ig, name: iShares iBoxx IG Corporate}
+    - {id: VCIT, src: yahoo, key: VCIT, ccy: USD, venue: US, liq: etf_bond_ig, name: Vanguard Intermediate-Term Corporate}
+    - {id: HYG,  src: yahoo, key: HYG,  ccy: USD, venue: US, liq: etf_bond_hy, name: iShares iBoxx High Yield Corporate}
+    - {id: JNK,  src: yahoo, key: JNK,  ccy: USD, venue: US, liq: etf_bond_hy, name: SPDR Bloomberg High Yield, nav: jnk}
+    - {id: EMB,  src: yahoo, key: EMB,  ccy: USD, venue: US, liq: etf_bond_hy, name: iShares JPM USD EM Bond}
+    - {id: EBND, src: yahoo, key: EBND, ccy: USD, venue: US, liq: etf_mid,     name: SPDR Bloomberg EM Local Bond, nav: ebnd}
+    - {id: BWX,  src: yahoo, key: BWX,  ccy: USD, venue: US, liq: etf_mid,     name: SPDR Bloomberg International Treasury, nav: bwx}
+    - {id: TIP,  src: yahoo, key: TIP,  ccy: USD, venue: US, liq: etf_bond_ig, name: iShares TIPS}
+    - {id: BIL,  src: yahoo, key: BIL,  ccy: USD, venue: US, liq: etf_bond_ig, name: SPDR 1-3 Month T-Bill, nav: bil}
+    - {id: GLD,  src: yahoo, key: GLD,  ccy: USD, venue: US, liq: etf_mega,  name: SPDR Gold Shares, nav: gld}
+    - {id: IAU,  src: yahoo, key: IAU,  ccy: USD, venue: US, liq: etf_large, name: iShares Gold Trust}
+    - {id: SLV,  src: yahoo, key: SLV,  ccy: USD, venue: US, liq: etf_large, name: iShares Silver Trust}
+    - {id: USO,  src: yahoo, key: USO,  ccy: USD, venue: US, liq: etf_large, name: United States Oil Fund}
+    - {id: BNO,  src: yahoo, key: BNO,  ccy: USD, venue: US, liq: etf_mid,   name: United States Brent Oil Fund}
+    - {id: UNG,  src: yahoo, key: UNG,  ccy: USD, venue: US, liq: etf_mid,   name: United States Natural Gas Fund}
+    - {id: DBC,  src: yahoo, key: DBC,  ccy: USD, venue: US, liq: etf_mid,   name: Invesco DB Commodity Index}
+    - {id: FXE,  src: yahoo, key: FXE,  ccy: USD, venue: US, liq: etf_mid,   name: Invesco CurrencyShares Euro}
+    - {id: FXY,  src: yahoo, key: FXY,  ccy: USD, venue: US, liq: etf_mid,   name: Invesco CurrencyShares Yen}
+    - {id: UUP,  src: yahoo, key: UUP,  ccy: USD, venue: US, liq: etf_mid,   name: Invesco DB US Dollar Bullish}
+
+  equity:
+    # ADRs / NY-listed lines (US leg) and their home listings (home leg). Ratio = home shares per US share.
+    - {id: TSM,  src: yahoo, key: TSM,  ccy: USD, venue: US, liq: us_large, name: TSMC ADR}
+    - {id: 2330_TW, src: yahoo, key: 2330.TW, ccy: TWD, venue: TWSE, liq: em_large, name: TSMC (Taipei), borrow: hard}
+    - {id: UMC,  src: yahoo, key: UMC,  ccy: USD, venue: US, liq: us_mid, name: United Microelectronics ADR}
+    - {id: 2303_TW, src: yahoo, key: 2303.TW, ccy: TWD, venue: TWSE, liq: em_large, name: United Microelectronics (Taipei), borrow: hard}
+    - {id: CHT,  src: yahoo, key: CHT,  ccy: USD, venue: US, liq: us_mid, name: Chunghwa Telecom ADR}
+    - {id: 2412_TW, src: yahoo, key: 2412.TW, ccy: TWD, venue: TWSE, liq: em_large, name: Chunghwa Telecom (Taipei), borrow: hard}
+    - {id: TM,   src: yahoo, key: TM,   ccy: USD, venue: US, liq: us_large, name: Toyota ADR}
+    - {id: 7203_T, src: yahoo, key: 7203.T, ccy: JPY, venue: TSE, liq: dev_large, name: Toyota (Tokyo)}
+    - {id: SONY, src: yahoo, key: SONY, ccy: USD, venue: US, liq: us_large, name: Sony ADR}
+    - {id: 6758_T, src: yahoo, key: 6758.T, ccy: JPY, venue: TSE, liq: dev_large, name: Sony (Tokyo)}
+    - {id: MUFG, src: yahoo, key: MUFG, ccy: USD, venue: US, liq: us_large, name: Mitsubishi UFJ ADR}
+    - {id: 8306_T, src: yahoo, key: 8306.T, ccy: JPY, venue: TSE, liq: dev_large, name: Mitsubishi UFJ (Tokyo)}
+    - {id: HMC,  src: yahoo, key: HMC,  ccy: USD, venue: US, liq: us_large, name: Honda ADR}
+    - {id: 7267_T, src: yahoo, key: 7267.T, ccy: JPY, venue: TSE, liq: dev_large, name: Honda (Tokyo)}
+    - {id: NMR,  src: yahoo, key: NMR,  ccy: USD, venue: US, liq: us_mid, name: Nomura ADR}
+    - {id: 8604_T, src: yahoo, key: 8604.T, ccy: JPY, venue: TSE, liq: dev_large, name: Nomura (Tokyo)}
+    - {id: BABA, src: yahoo, key: BABA, ccy: USD, venue: US, liq: us_large, name: Alibaba ADR}
+    - {id: 9988_HK, src: yahoo, key: 9988.HK, ccy: HKD, venue: HKEX, liq: em_large, name: Alibaba (Hong Kong)}
+    - {id: JD,   src: yahoo, key: JD,   ccy: USD, venue: US, liq: us_large, name: JD.com ADR}
+    - {id: 9618_HK, src: yahoo, key: 9618.HK, ccy: HKD, venue: HKEX, liq: em_large, name: JD.com (Hong Kong)}
+    - {id: BIDU, src: yahoo, key: BIDU, ccy: USD, venue: US, liq: us_large, name: Baidu ADR}
+    - {id: 9888_HK, src: yahoo, key: 9888.HK, ccy: HKD, venue: HKEX, liq: em_large, name: Baidu (Hong Kong)}
+    - {id: NTES, src: yahoo, key: NTES, ccy: USD, venue: US, liq: us_large, name: NetEase ADR}
+    - {id: 9999_HK, src: yahoo, key: 9999.HK, ccy: HKD, venue: HKEX, liq: em_large, name: NetEase (Hong Kong)}
+    - {id: TCOM, src: yahoo, key: TCOM, ccy: USD, venue: US, liq: us_large, name: Trip.com ADR}
+    - {id: 9961_HK, src: yahoo, key: 9961.HK, ccy: HKD, venue: HKEX, liq: em_large, name: Trip.com (Hong Kong)}
+    - {id: YUMC, src: yahoo, key: YUMC, ccy: USD, venue: US, liq: us_large, name: Yum China (NYSE)}
+    - {id: 9987_HK, src: yahoo, key: 9987.HK, ccy: HKD, venue: HKEX, liq: em_large, name: Yum China (Hong Kong)}
+    - {id: LI,   src: yahoo, key: LI,   ccy: USD, venue: US, liq: us_large, name: Li Auto ADR}
+    - {id: 2015_HK, src: yahoo, key: 2015.HK, ccy: HKD, venue: HKEX, liq: em_large, name: Li Auto (Hong Kong)}
+    - {id: ZTO,  src: yahoo, key: ZTO,  ccy: USD, venue: US, liq: us_mid, name: ZTO Express ADR}
+    - {id: 2057_HK, src: yahoo, key: 2057.HK, ccy: HKD, venue: HKEX, liq: em_large, name: ZTO Express (Hong Kong)}
+    - {id: SHEL, src: yahoo, key: SHEL, ccy: USD, venue: US, liq: us_large, name: Shell ADR}
+    - {id: SHEL_L, src: yahoo, key: SHEL.L, ccy: GBp, venue: LSE, liq: dev_large, name: Shell (London)}
+    - {id: BP,   src: yahoo, key: BP,   ccy: USD, venue: US, liq: us_large, name: BP ADR}
+    - {id: BP_L, src: yahoo, key: BP.L, ccy: GBp, venue: LSE, liq: dev_large, name: BP (London)}
+    - {id: HSBC, src: yahoo, key: HSBC, ccy: USD, venue: US, liq: us_large, name: HSBC ADR}
+    - {id: HSBA_L, src: yahoo, key: HSBA.L, ccy: GBp, venue: LSE, liq: dev_large, name: HSBC (London)}
+    - {id: 0005_HK, src: yahoo, key: 0005.HK, ccy: HKD, venue: HKEX, liq: em_large, name: HSBC (Hong Kong)}
+    - {id: AZN,  src: yahoo, key: AZN,  ccy: USD, venue: US, liq: us_large, name: AstraZeneca ADR}
+    - {id: AZN_L, src: yahoo, key: AZN.L, ccy: GBp, venue: LSE, liq: dev_large, name: AstraZeneca (London)}
+    - {id: UL,   src: yahoo, key: UL,   ccy: USD, venue: US, liq: us_large, name: Unilever ADR}
+    - {id: ULVR_L, src: yahoo, key: ULVR.L, ccy: GBp, venue: LSE, liq: dev_large, name: Unilever (London)}
+    - {id: GSK,  src: yahoo, key: GSK,  ccy: USD, venue: US, liq: us_large, name: GSK ADR}
+    - {id: GSK_L, src: yahoo, key: GSK.L, ccy: GBp, venue: LSE, liq: dev_large, name: GSK (London)}
+    - {id: DEO,  src: yahoo, key: DEO,  ccy: USD, venue: US, liq: us_large, name: Diageo ADR}
+    - {id: DGE_L, src: yahoo, key: DGE.L, ccy: GBp, venue: LSE, liq: dev_large, name: Diageo (London)}
+    - {id: RIO,  src: yahoo, key: RIO,  ccy: USD, venue: US, liq: us_large, name: Rio Tinto plc ADR}
+    - {id: RIO_L, src: yahoo, key: RIO.L, ccy: GBp, venue: LSE, liq: dev_large, name: Rio Tinto plc (London)}
+    - {id: RIO_AX, src: yahoo, key: RIO.AX, ccy: AUD, venue: ASX, liq: dev_large, name: Rio Tinto Ltd (Sydney)}
+    - {id: BTI,  src: yahoo, key: BTI,  ccy: USD, venue: US, liq: us_large, name: British American Tobacco ADR}
+    - {id: BATS_L, src: yahoo, key: BATS.L, ccy: GBp, venue: LSE, liq: dev_large, name: British American Tobacco (London)}
+    - {id: NGG,  src: yahoo, key: NGG,  ccy: USD, venue: US, liq: us_mid, name: National Grid ADR}
+    - {id: NG_L, src: yahoo, key: NG.L, ccy: GBp, venue: LSE, liq: dev_large, name: National Grid (London)}
+    - {id: ASML, src: yahoo, key: ASML, ccy: USD, venue: US, liq: us_large, name: ASML (NY registry)}
+    - {id: ASML_AS, src: yahoo, key: ASML.AS, ccy: EUR, venue: EURONEXT, liq: dev_large, name: ASML (Amsterdam)}
+    - {id: SAP,  src: yahoo, key: SAP,  ccy: USD, venue: US, liq: us_large, name: SAP ADR}
+    - {id: SAP_DE, src: yahoo, key: SAP.DE, ccy: EUR, venue: XETRA, liq: dev_large, name: SAP (Xetra)}
+    - {id: NVO,  src: yahoo, key: NVO,  ccy: USD, venue: US, liq: us_large, name: Novo Nordisk ADR}
+    - {id: NOVO_B_CO, src: yahoo, key: NOVO-B.CO, ccy: DKK, venue: CPH, liq: dev_large, name: Novo Nordisk B (Copenhagen)}
+    - {id: TTE,  src: yahoo, key: TTE,  ccy: USD, venue: US, liq: us_large, name: TotalEnergies ADR}
+    - {id: TTE_PA, src: yahoo, key: TTE.PA, ccy: EUR, venue: EURONEXT, liq: dev_large, name: TotalEnergies (Paris)}
+    - {id: SNY,  src: yahoo, key: SNY,  ccy: USD, venue: US, liq: us_large, name: Sanofi ADR}
+    - {id: SAN_PA, src: yahoo, key: SAN.PA, ccy: EUR, venue: EURONEXT, liq: dev_large, name: Sanofi (Paris)}
+    - {id: ING,  src: yahoo, key: ING,  ccy: USD, venue: US, liq: us_large, name: ING ADR}
+    - {id: INGA_AS, src: yahoo, key: INGA.AS, ccy: EUR, venue: EURONEXT, liq: dev_large, name: ING (Amsterdam)}
+    - {id: NVS,  src: yahoo, key: NVS,  ccy: USD, venue: US, liq: us_large, name: Novartis ADR}
+    - {id: NOVN_SW, src: yahoo, key: NOVN.SW, ccy: CHF, venue: SIX, liq: dev_large, name: Novartis (Zurich)}
+    - {id: UBS,  src: yahoo, key: UBS,  ccy: USD, venue: US, liq: us_large, name: UBS (NYSE ordinary)}
+    - {id: UBSG_SW, src: yahoo, key: UBSG.SW, ccy: CHF, venue: SIX, liq: dev_large, name: UBS (Zurich)}
+    - {id: ERIC, src: yahoo, key: ERIC, ccy: USD, venue: US, liq: us_mid, name: Ericsson ADR}
+    - {id: ERIC_B_ST, src: yahoo, key: ERIC-B.ST, ccy: SEK, venue: STO, liq: dev_large, name: Ericsson B (Stockholm)}
+    - {id: INFY, src: yahoo, key: INFY, ccy: USD, venue: US, liq: us_large, name: Infosys ADR}
+    - {id: INFY_NS, src: yahoo, key: INFY.NS, ccy: INR, venue: NSE, liq: em_large, name: Infosys (NSE), borrow: none}
+    - {id: HDB,  src: yahoo, key: HDB,  ccy: USD, venue: US, liq: us_large, name: HDFC Bank ADR}
+    - {id: HDFCBANK_NS, src: yahoo, key: HDFCBANK.NS, ccy: INR, venue: NSE, liq: em_large, name: HDFC Bank (NSE), borrow: none}
+    - {id: IBN,  src: yahoo, key: IBN,  ccy: USD, venue: US, liq: us_large, name: ICICI Bank ADR}
+    - {id: ICICIBANK_NS, src: yahoo, key: ICICIBANK.NS, ccy: INR, venue: NSE, liq: em_large, name: ICICI Bank (NSE), borrow: none}
+    - {id: WIT,  src: yahoo, key: WIT,  ccy: USD, venue: US, liq: us_mid, name: Wipro ADR}
+    - {id: WIPRO_NS, src: yahoo, key: WIPRO.NS, ccy: INR, venue: NSE, liq: em_large, name: Wipro (NSE), borrow: none}
+    - {id: BHP,  src: yahoo, key: BHP,  ccy: USD, venue: US, liq: us_large, name: BHP ADR}
+    - {id: BHP_AX, src: yahoo, key: BHP.AX, ccy: AUD, venue: ASX, liq: dev_large, name: BHP (Sydney)}
+    - {id: KB,   src: yahoo, key: KB,   ccy: USD, venue: US, liq: us_mid, name: KB Financial ADR}
+    - {id: 105560_KS, src: yahoo, key: 105560.KS, ccy: KRW, venue: KRX, liq: em_large, name: KB Financial (Seoul), borrow: hard}
+    - {id: SHG,  src: yahoo, key: SHG,  ccy: USD, venue: US, liq: us_mid, name: Shinhan Financial ADR}
+    - {id: 055550_KS, src: yahoo, key: 055550.KS, ccy: KRW, venue: KRX, liq: em_large, name: Shinhan Financial (Seoul), borrow: hard}
+    - {id: VALE, src: yahoo, key: VALE, ccy: USD, venue: US, liq: us_large, name: Vale ADR}
+    - {id: VALE3_SA, src: yahoo, key: VALE3.SA, ccy: BRL, venue: B3, liq: em_large, name: Vale (Sao Paulo), borrow: warm}
+    - {id: ITUB, src: yahoo, key: ITUB, ccy: USD, venue: US, liq: us_large, name: Itau Unibanco ADR}
+    - {id: ITUB4_SA, src: yahoo, key: ITUB4.SA, ccy: BRL, venue: B3, liq: em_large, name: Itau Unibanco PN (Sao Paulo), borrow: warm}
+    - {id: AMX,  src: yahoo, key: AMX,  ccy: USD, venue: US, liq: us_mid, name: America Movil ADR}
+    - {id: AMXB_MX, src: yahoo, key: AMXB.MX, ccy: MXN, venue: BMV, liq: em_large, name: America Movil B (Mexico), borrow: hard}
+    # Canadian interlisted shares (the same share trades in Toronto and New York).
+    - {id: RY,   src: yahoo, key: RY,   ccy: USD, venue: US, liq: us_large, name: Royal Bank of Canada (NYSE)}
+    - {id: RY_TO, src: yahoo, key: RY.TO, ccy: CAD, venue: TSX, liq: dev_large, name: Royal Bank of Canada (TSX)}
+    - {id: TD,   src: yahoo, key: TD,   ccy: USD, venue: US, liq: us_large, name: Toronto-Dominion (NYSE)}
+    - {id: TD_TO, src: yahoo, key: TD.TO, ccy: CAD, venue: TSX, liq: dev_large, name: Toronto-Dominion (TSX)}
+    - {id: BNS,  src: yahoo, key: BNS,  ccy: USD, venue: US, liq: us_large, name: Bank of Nova Scotia (NYSE)}
+    - {id: BNS_TO, src: yahoo, key: BNS.TO, ccy: CAD, venue: TSX, liq: dev_large, name: Bank of Nova Scotia (TSX)}
+    - {id: BMO,  src: yahoo, key: BMO,  ccy: USD, venue: US, liq: us_large, name: Bank of Montreal (NYSE)}
+    - {id: BMO_TO, src: yahoo, key: BMO.TO, ccy: CAD, venue: TSX, liq: dev_large, name: Bank of Montreal (TSX)}
+    - {id: CM,   src: yahoo, key: CM,   ccy: USD, venue: US, liq: us_large, name: CIBC (NYSE)}
+    - {id: CM_TO, src: yahoo, key: CM.TO, ccy: CAD, venue: TSX, liq: dev_large, name: CIBC (TSX)}
+    - {id: ENB,  src: yahoo, key: ENB,  ccy: USD, venue: US, liq: us_large, name: Enbridge (NYSE)}
+    - {id: ENB_TO, src: yahoo, key: ENB.TO, ccy: CAD, venue: TSX, liq: dev_large, name: Enbridge (TSX)}
+    - {id: CNQ,  src: yahoo, key: CNQ,  ccy: USD, venue: US, liq: us_large, name: Canadian Natural (NYSE)}
+    - {id: CNQ_TO, src: yahoo, key: CNQ.TO, ccy: CAD, venue: TSX, liq: dev_large, name: Canadian Natural (TSX)}
+    - {id: SU,   src: yahoo, key: SU,   ccy: USD, venue: US, liq: us_large, name: Suncor (NYSE)}
+    - {id: SU_TO, src: yahoo, key: SU.TO, ccy: CAD, venue: TSX, liq: dev_large, name: Suncor (TSX)}
+    - {id: CNI,  src: yahoo, key: CNI,  ccy: USD, venue: US, liq: us_large, name: Canadian National Railway (NYSE)}
+    - {id: CNR_TO, src: yahoo, key: CNR.TO, ccy: CAD, venue: TSX, liq: dev_large, name: Canadian National Railway (TSX)}
+    - {id: CP,   src: yahoo, key: CP,   ccy: USD, venue: US, liq: us_large, name: Canadian Pacific Kansas City (NYSE)}
+    - {id: CP_TO, src: yahoo, key: CP.TO, ccy: CAD, venue: TSX, liq: dev_large, name: Canadian Pacific Kansas City (TSX)}
+    - {id: SHOP, src: yahoo, key: SHOP, ccy: USD, venue: US, liq: us_large, name: Shopify (NASDAQ)}
+    - {id: SHOP_TO, src: yahoo, key: SHOP.TO, ccy: CAD, venue: TSX, liq: dev_large, name: Shopify (TSX)}
+    - {id: TRI,  src: yahoo, key: TRI,  ccy: USD, venue: US, liq: us_large, name: Thomson Reuters (NYSE)}
+    - {id: TRI_TO, src: yahoo, key: TRI.TO, ccy: CAD, venue: TSX, liq: dev_large, name: Thomson Reuters (TSX)}
+    # Share classes of one company (US).
+    - {id: GOOGL, src: yahoo, key: GOOGL, ccy: USD, venue: US, liq: us_large, name: Alphabet class A}
+    - {id: GOOG,  src: yahoo, key: GOOG,  ccy: USD, venue: US, liq: us_large, name: Alphabet class C}
+    - {id: BRK_A, src: yahoo, key: BRK-A, ccy: USD, venue: US, liq: us_mid,   name: Berkshire Hathaway class A}
+    - {id: BRK_B, src: yahoo, key: BRK-B, ccy: USD, venue: US, liq: us_large, name: Berkshire Hathaway class B}
+    - {id: FOXA,  src: yahoo, key: FOXA,  ccy: USD, venue: US, liq: us_mid,   name: Fox class A (non-voting)}
+    - {id: FOX,   src: yahoo, key: FOX,   ccy: USD, venue: US, liq: us_mid,   name: Fox class B (voting)}
+    - {id: NWSA,  src: yahoo, key: NWSA,  ccy: USD, venue: US, liq: us_mid,   name: News Corp class A (non-voting)}
+    - {id: NWS,   src: yahoo, key: NWS,   ccy: USD, venue: US, liq: us_mid,   name: News Corp class B (voting)}
+    - {id: LEN,   src: yahoo, key: LEN,   ccy: USD, venue: US, liq: us_large, name: Lennar class A}
+    - {id: LEN_B, src: yahoo, key: LEN-B, ccy: USD, venue: US, liq: us_mid,   name: Lennar class B}
+    - {id: BF_A,  src: yahoo, key: BF-A,  ccy: USD, venue: US, liq: us_mid,   name: Brown-Forman class A (voting)}
+    - {id: BF_B,  src: yahoo, key: BF-B,  ccy: USD, venue: US, liq: us_mid,   name: Brown-Forman class B}
+    - {id: HEI,   src: yahoo, key: HEI,   ccy: USD, venue: US, liq: us_mid,   name: HEICO common}
+    - {id: HEI_A, src: yahoo, key: HEI-A, ccy: USD, venue: US, liq: us_mid,   name: HEICO class A}
+    - {id: UA,    src: yahoo, key: UA,    ccy: USD, venue: US, liq: us_mid,   name: Under Armour class C}
+    - {id: UAA,   src: yahoo, key: UAA,   ccy: USD, venue: US, liq: us_mid,   name: Under Armour class A}
+    - {id: Z,     src: yahoo, key: Z,     ccy: USD, venue: US, liq: us_mid,   name: Zillow class C}
+    - {id: ZG,    src: yahoo, key: ZG,    ccy: USD, venue: US, liq: us_mid,   name: Zillow class A}
+    # Single stocks for the statistical (no-mechanism) pair scan.
+    - {id: KO,  src: yahoo, key: KO,  ccy: USD, venue: US, liq: us_large, name: Coca-Cola}
+    - {id: PEP, src: yahoo, key: PEP, ccy: USD, venue: US, liq: us_large, name: PepsiCo}
+    - {id: XOM, src: yahoo, key: XOM, ccy: USD, venue: US, liq: us_large, name: Exxon Mobil}
+    - {id: CVX, src: yahoo, key: CVX, ccy: USD, venue: US, liq: us_large, name: Chevron}
+    - {id: V,   src: yahoo, key: V,   ccy: USD, venue: US, liq: us_large, name: Visa}
+    - {id: MA,  src: yahoo, key: MA,  ccy: USD, venue: US, liq: us_large, name: Mastercard}
+    - {id: HD,  src: yahoo, key: HD,  ccy: USD, venue: US, liq: us_large, name: Home Depot}
+    - {id: LOW, src: yahoo, key: LOW, ccy: USD, venue: US, liq: us_large, name: Lowe's}
+    - {id: UPS, src: yahoo, key: UPS, ccy: USD, venue: US, liq: us_large, name: United Parcel Service}
+    - {id: FDX, src: yahoo, key: FDX, ccy: USD, venue: US, liq: us_large, name: FedEx}
+    - {id: GS,  src: yahoo, key: GS,  ccy: USD, venue: US, liq: us_large, name: Goldman Sachs}
+    - {id: MS,  src: yahoo, key: MS,  ccy: USD, venue: US, liq: us_large, name: Morgan Stanley}
+    - {id: JPM, src: yahoo, key: JPM, ccy: USD, venue: US, liq: us_large, name: JPMorgan Chase}
+    - {id: BAC, src: yahoo, key: BAC, ccy: USD, venue: US, liq: us_large, name: Bank of America}
+    - {id: WMT, src: yahoo, key: WMT, ccy: USD, venue: US, liq: us_large, name: Walmart}
+    - {id: TGT, src: yahoo, key: TGT, ccy: USD, venue: US, liq: us_large, name: Target}
+    - {id: T,   src: yahoo, key: T,   ccy: USD, venue: US, liq: us_large, name: AT&T}
+    - {id: VZ,  src: yahoo, key: VZ,  ccy: USD, venue: US, liq: us_large, name: Verizon}
+
+  fx:
+    # All FX is stored as USD per one unit of the currency (convert local prices to USD by multiplying).
+    - {id: EUR, src: fred_fed, key: DEXUSEU, ccy: EUR, venue: FED_NOON, liq: fx_major, unit: usd_per_ccy, name: Euro (H.10 noon)}
+    - {id: JPY, src: fred_fed, key: DEXJPUS, ccy: JPY, venue: FED_NOON, liq: fx_major, unit: ccy_per_usd, name: Japanese yen (H.10 noon)}
+    - {id: GBP, src: fred_fed, key: DEXUSUK, ccy: GBP, venue: FED_NOON, liq: fx_major, unit: usd_per_ccy, name: Pound sterling (H.10 noon)}
+    - {id: CHF, src: fred_fed, key: DEXSZUS, ccy: CHF, venue: FED_NOON, liq: fx_major, unit: ccy_per_usd, name: Swiss franc (H.10 noon)}
+    - {id: CAD, src: fred_fed, key: DEXCAUS, ccy: CAD, venue: FED_NOON, liq: fx_major, unit: ccy_per_usd, name: Canadian dollar (H.10 noon)}
+    - {id: AUD, src: fred_fed, key: DEXUSAL, ccy: AUD, venue: FED_NOON, liq: fx_major, unit: usd_per_ccy, name: Australian dollar (H.10 noon)}
+    - {id: NZD, src: fred_fed, key: DEXUSNZ, ccy: NZD, venue: FED_NOON, liq: fx_major, unit: usd_per_ccy, name: New Zealand dollar (H.10 noon)}
+    - {id: SEK, src: fred_fed, key: DEXSDUS, ccy: SEK, venue: FED_NOON, liq: fx_major, unit: ccy_per_usd, name: Swedish krona (H.10 noon)}
+    - {id: NOK, src: fred_fed, key: DEXNOUS, ccy: NOK, venue: FED_NOON, liq: fx_major, unit: ccy_per_usd, name: Norwegian krone (H.10 noon)}
+    - {id: DKK, src: fred_fed, key: DEXDNUS, ccy: DKK, venue: FED_NOON, liq: fx_major, unit: ccy_per_usd, name: Danish krone (H.10 noon)}
+    - {id: MXN, src: fred_fed, key: DEXMXUS, ccy: MXN, venue: FED_NOON, liq: fx_em, unit: ccy_per_usd, name: Mexican peso (H.10 noon)}
+    - {id: BRL, src: fred_fed, key: DEXBZUS, ccy: BRL, venue: FED_NOON, liq: fx_em, unit: ccy_per_usd, name: Brazilian real (H.10 noon)}
+    - {id: ZAR, src: fred_fed, key: DEXSFUS, ccy: ZAR, venue: FED_NOON, liq: fx_em, unit: ccy_per_usd, name: South African rand (H.10 noon)}
+    - {id: KRW, src: fred_fed, key: DEXKOUS, ccy: KRW, venue: FED_NOON, liq: fx_em, unit: ccy_per_usd, name: Korean won (H.10 noon)}
+    - {id: INR, src: fred_fed, key: DEXINUS, ccy: INR, venue: FED_NOON, liq: fx_em, unit: ccy_per_usd, name: Indian rupee (H.10 noon)}
+    - {id: CNY, src: fred_fed, key: DEXCHUS, ccy: CNY, venue: FED_NOON, liq: fx_em, unit: ccy_per_usd, name: Chinese yuan (H.10 noon)}
+    - {id: HKD, src: fred_fed, key: DEXHKUS, ccy: HKD, venue: FED_NOON, liq: fx_major, unit: ccy_per_usd, name: Hong Kong dollar (H.10 noon)}
+    - {id: SGD, src: fred_fed, key: DEXSIUS, ccy: SGD, venue: FED_NOON, liq: fx_major, unit: ccy_per_usd, name: Singapore dollar (H.10 noon)}
+    - {id: TWD, src: fred_fed, key: DEXTAUS, ccy: TWD, venue: FED_NOON, liq: fx_em, unit: ccy_per_usd, name: Taiwan dollar (H.10 noon)}
+    - {id: THB, src: fred_fed, key: DEXTHUS, ccy: THB, venue: FED_NOON, liq: fx_em, unit: ccy_per_usd, name: Thai baht (H.10 noon)}
+    # ECB reference rates (14:15 CET) for EUR crosses: stored as units of currency per EUR, as published.
+    - {id: ECB_EURUSD, src: ecb, key: EXR/D.USD.EUR.SP00.A, ccy: USD, venue: ECB_FIX, liq: fx_major, unit: ccy_per_eur, name: EUR/USD ECB reference rate}
+    - {id: ECB_EURJPY, src: ecb, key: EXR/D.JPY.EUR.SP00.A, ccy: JPY, venue: ECB_FIX, liq: fx_major, unit: ccy_per_eur, name: EUR/JPY ECB reference rate}
+    - {id: ECB_EURGBP, src: ecb, key: EXR/D.GBP.EUR.SP00.A, ccy: GBP, venue: ECB_FIX, liq: fx_major, unit: ccy_per_eur, name: EUR/GBP ECB reference rate}
+    - {id: ECB_EURCHF, src: ecb, key: EXR/D.CHF.EUR.SP00.A, ccy: CHF, venue: ECB_FIX, liq: fx_major, unit: ccy_per_eur, name: EUR/CHF ECB reference rate}
+    # Further ECB reference rates: used only to extend H.10 (published weekly) over its latest missing days.
+    - {id: ECB_EURCAD, src: ecb, key: EXR/D.CAD.EUR.SP00.A, ccy: CAD, venue: ECB_FIX, liq: fx_major, unit: ccy_per_eur, name: EUR/CAD ECB reference rate}
+    - {id: ECB_EURAUD, src: ecb, key: EXR/D.AUD.EUR.SP00.A, ccy: AUD, venue: ECB_FIX, liq: fx_major, unit: ccy_per_eur, name: EUR/AUD ECB reference rate}
+    - {id: ECB_EURNZD, src: ecb, key: EXR/D.NZD.EUR.SP00.A, ccy: NZD, venue: ECB_FIX, liq: fx_major, unit: ccy_per_eur, name: EUR/NZD ECB reference rate}
+    - {id: ECB_EURSEK, src: ecb, key: EXR/D.SEK.EUR.SP00.A, ccy: SEK, venue: ECB_FIX, liq: fx_major, unit: ccy_per_eur, name: EUR/SEK ECB reference rate}
+    - {id: ECB_EURNOK, src: ecb, key: EXR/D.NOK.EUR.SP00.A, ccy: NOK, venue: ECB_FIX, liq: fx_major, unit: ccy_per_eur, name: EUR/NOK ECB reference rate}
+    - {id: ECB_EURDKK, src: ecb, key: EXR/D.DKK.EUR.SP00.A, ccy: DKK, venue: ECB_FIX, liq: fx_major, unit: ccy_per_eur, name: EUR/DKK ECB reference rate}
+    - {id: ECB_EURHKD, src: ecb, key: EXR/D.HKD.EUR.SP00.A, ccy: HKD, venue: ECB_FIX, liq: fx_major, unit: ccy_per_eur, name: EUR/HKD ECB reference rate}
+    - {id: ECB_EURSGD, src: ecb, key: EXR/D.SGD.EUR.SP00.A, ccy: SGD, venue: ECB_FIX, liq: fx_major, unit: ccy_per_eur, name: EUR/SGD ECB reference rate}
+    - {id: ECB_EURINR, src: ecb, key: EXR/D.INR.EUR.SP00.A, ccy: INR, venue: ECB_FIX, liq: fx_em, unit: ccy_per_eur, name: EUR/INR ECB reference rate}
+    - {id: ECB_EURKRW, src: ecb, key: EXR/D.KRW.EUR.SP00.A, ccy: KRW, venue: ECB_FIX, liq: fx_em, unit: ccy_per_eur, name: EUR/KRW ECB reference rate}
+    - {id: ECB_EURMXN, src: ecb, key: EXR/D.MXN.EUR.SP00.A, ccy: MXN, venue: ECB_FIX, liq: fx_em, unit: ccy_per_eur, name: EUR/MXN ECB reference rate}
+    - {id: ECB_EURBRL, src: ecb, key: EXR/D.BRL.EUR.SP00.A, ccy: BRL, venue: ECB_FIX, liq: fx_em, unit: ccy_per_eur, name: EUR/BRL ECB reference rate}
+    - {id: ECB_EURZAR, src: ecb, key: EXR/D.ZAR.EUR.SP00.A, ccy: ZAR, venue: ECB_FIX, liq: fx_em, unit: ccy_per_eur, name: EUR/ZAR ECB reference rate}
+    - {id: ECB_EURCNY, src: ecb, key: EXR/D.CNY.EUR.SP00.A, ccy: CNY, venue: ECB_FIX, liq: fx_em, unit: ccy_per_eur, name: EUR/CNY ECB reference rate}
+    - {id: ECB_EURTHB, src: ecb, key: EXR/D.THB.EUR.SP00.A, ccy: THB, venue: ECB_FIX, liq: fx_em, unit: ccy_per_eur, name: EUR/THB ECB reference rate}
+
+  sovereign:
+    # Yields in percent. `key` for curve sources is the maturity in years (table column).
+    - {id: UST_3M,  src: treasury, table: nominal, key: 0.25, ccy: USD, venue: UST, liq: govt_us, name: US Treasury 3-month (par)}
+    - {id: UST_1Y,  src: treasury, table: nominal, key: 1.0,  ccy: USD, venue: UST, liq: govt_us, name: US Treasury 1-year (par)}
+    - {id: UST_2Y,  src: treasury, table: nominal, key: 2.0,  ccy: USD, venue: UST, liq: govt_us, name: US Treasury 2-year (par)}
+    - {id: UST_3Y,  src: treasury, table: nominal, key: 3.0,  ccy: USD, venue: UST, liq: govt_us, name: US Treasury 3-year (par)}
+    - {id: UST_5Y,  src: treasury, table: nominal, key: 5.0,  ccy: USD, venue: UST, liq: govt_us, name: US Treasury 5-year (par)}
+    - {id: UST_7Y,  src: treasury, table: nominal, key: 7.0,  ccy: USD, venue: UST, liq: govt_us, name: US Treasury 7-year (par)}
+    - {id: UST_10Y, src: treasury, table: nominal, key: 10.0, ccy: USD, venue: UST, liq: govt_us, name: US Treasury 10-year (par)}
+    - {id: UST_20Y, src: treasury, table: nominal, key: 20.0, ccy: USD, venue: UST, liq: govt_us, name: US Treasury 20-year (par)}
+    - {id: UST_30Y, src: treasury, table: nominal, key: 30.0, ccy: USD, venue: UST, liq: govt_us, name: US Treasury 30-year (par)}
+    - {id: TIPS_5Y,  src: treasury, table: real, key: 5.0,  ccy: USD, venue: UST, liq: tips, name: US TIPS 5-year real (par)}
+    - {id: TIPS_10Y, src: treasury, table: real, key: 10.0, ccy: USD, venue: UST, liq: tips, name: US TIPS 10-year real (par)}
+    - {id: TIPS_30Y, src: treasury, table: real, key: 30.0, ccy: USD, venue: UST, liq: tips, name: US TIPS 30-year real (par)}
+    - {id: BUND_2Y,  src: bundesbank, key: BBSIS.D.I.ZST.ZI.EUR.S1311.B.A604.R02XX.R.A.A._Z._Z.A, ccy: EUR, venue: BBK, liq: govt_dev, mat: 2,  name: German Bund 2-year (Svensson)}
+    - {id: BUND_5Y,  src: bundesbank, key: BBSIS.D.I.ZST.ZI.EUR.S1311.B.A604.R05XX.R.A.A._Z._Z.A, ccy: EUR, venue: BBK, liq: govt_dev, mat: 5,  name: German Bund 5-year (Svensson)}
+    - {id: BUND_10Y, src: bundesbank, key: BBSIS.D.I.ZST.ZI.EUR.S1311.B.A604.R10XX.R.A.A._Z._Z.A, ccy: EUR, venue: BBK, liq: govt_dev, mat: 10, name: German Bund 10-year (Svensson)}
+    - {id: BUND_30Y, src: bundesbank, key: BBSIS.D.I.ZST.ZI.EUR.S1311.B.A604.R30XX.R.A.A._Z._Z.A, ccy: EUR, venue: BBK, liq: govt_dev, mat: 30, name: German Bund 30-year (Svensson)}
+    - {id: JGB_2Y,  src: mof, key: 2.0,  ccy: JPY, venue: MOF, liq: govt_dev, name: Japan JGB 2-year}
+    - {id: JGB_5Y,  src: mof, key: 5.0,  ccy: JPY, venue: MOF, liq: govt_dev, name: Japan JGB 5-year}
+    - {id: JGB_10Y, src: mof, key: 10.0, ccy: JPY, venue: MOF, liq: govt_dev, name: Japan JGB 10-year}
+    - {id: JGB_30Y, src: mof, key: 30.0, ccy: JPY, venue: MOF, liq: govt_dev, name: Japan JGB 30-year}
+    - {id: CGB_2Y,  src: boc, key: BD.CDN.2YR.DQ.YLD,  ccy: CAD, venue: BOC, liq: govt_dev, mat: 2,  name: Canada 2-year benchmark}
+    - {id: CGB_5Y,  src: boc, key: BD.CDN.5YR.DQ.YLD,  ccy: CAD, venue: BOC, liq: govt_dev, mat: 5,  name: Canada 5-year benchmark}
+    - {id: CGB_10Y, src: boc, key: BD.CDN.10YR.DQ.YLD, ccy: CAD, venue: BOC, liq: govt_dev, mat: 10, name: Canada 10-year benchmark}
+    - {id: ACGB_2Y,  src: rba, key: FCMYGBAG2D,  ccy: AUD, venue: RBA, liq: govt_dev, mat: 2,  name: Australia 2-year}
+    - {id: ACGB_5Y,  src: rba, key: FCMYGBAG5D,  ccy: AUD, venue: RBA, liq: govt_dev, mat: 5,  name: Australia 5-year}
+    - {id: ACGB_10Y, src: rba, key: FCMYGBAG10D, ccy: AUD, venue: RBA, liq: govt_dev, mat: 10, name: Australia 10-year}
+    - {id: GILT_5Y,  src: boe, key: IUDSNZC, ccy: GBP, venue: BOE, liq: govt_dev, mat: 5,  name: UK gilt 5-year (nominal zero-coupon)}
+    - {id: GILT_10Y, src: boe, key: IUDMNZC, ccy: GBP, venue: BOE, liq: govt_dev, mat: 10, name: UK gilt 10-year (nominal zero-coupon)}
+    - {id: GILT_20Y, src: boe, key: IUDLNZC, ccy: GBP, venue: BOE, liq: govt_dev, mat: 20, name: UK gilt 20-year (nominal zero-coupon)}
+    - {id: EA_AAA_10Y, src: ecb, key: YC/B.U2.EUR.4F.G_N_A.SV_C_YM.SR_10Y, ccy: EUR, venue: ECB_FIX, liq: index, mat: 10, name: Euro area AAA 10-year spot}
+    - {id: EA_ALL_10Y, src: ecb, key: YC/B.U2.EUR.4F.G_N_C.SV_C_YM.SR_10Y, ccy: EUR, venue: ECB_FIX, liq: index, mat: 10, name: Euro area all-issuer 10-year spot}
+    - {id: EA_AAA_2Y,  src: ecb, key: YC/B.U2.EUR.4F.G_N_A.SV_C_YM.SR_2Y,  ccy: EUR, venue: ECB_FIX, liq: index, mat: 2,  name: Euro area AAA 2-year spot}
+    - {id: EA_ALL_2Y,  src: ecb, key: YC/B.U2.EUR.4F.G_N_C.SV_C_YM.SR_2Y,  ccy: EUR, venue: ECB_FIX, liq: index, mat: 2,  name: Euro area all-issuer 2-year spot}
+    # Monthly 10-year yields by country (ECB convergence statistics).
+    - {id: DE_10Y_M, src: ecb, key: IRS/M.DE.L.L40.CI.0000.EUR.N.Z, ccy: EUR, venue: MONTHLY, liq: govt_dev, mat: 10, freq: M, name: Germany 10-year (monthly)}
+    - {id: FR_10Y_M, src: ecb, key: IRS/M.FR.L.L40.CI.0000.EUR.N.Z, ccy: EUR, venue: MONTHLY, liq: govt_dev, mat: 10, freq: M, name: France 10-year (monthly)}
+    - {id: IT_10Y_M, src: ecb, key: IRS/M.IT.L.L40.CI.0000.EUR.N.Z, ccy: EUR, venue: MONTHLY, liq: govt_dev, mat: 10, freq: M, name: Italy 10-year (monthly)}
+    - {id: ES_10Y_M, src: ecb, key: IRS/M.ES.L.L40.CI.0000.EUR.N.Z, ccy: EUR, venue: MONTHLY, liq: govt_dev, mat: 10, freq: M, name: Spain 10-year (monthly)}
+    - {id: PT_10Y_M, src: ecb, key: IRS/M.PT.L.L40.CI.0000.EUR.N.Z, ccy: EUR, venue: MONTHLY, liq: govt_dev, mat: 10, freq: M, name: Portugal 10-year (monthly)}
+    - {id: GR_10Y_M, src: ecb, key: IRS/M.GR.L.L40.CI.0000.EUR.N.Z, ccy: EUR, venue: MONTHLY, liq: govt_dev, mat: 10, freq: M, name: Greece 10-year (monthly)}
+    - {id: NL_10Y_M, src: ecb, key: IRS/M.NL.L.L40.CI.0000.EUR.N.Z, ccy: EUR, venue: MONTHLY, liq: govt_dev, mat: 10, freq: M, name: Netherlands 10-year (monthly)}
+    - {id: BE_10Y_M, src: ecb, key: IRS/M.BE.L.L40.CI.0000.EUR.N.Z, ccy: EUR, venue: MONTHLY, liq: govt_dev, mat: 10, freq: M, name: Belgium 10-year (monthly)}
+    - {id: AT_10Y_M, src: ecb, key: IRS/M.AT.L.L40.CI.0000.EUR.N.Z, ccy: EUR, venue: MONTHLY, liq: govt_dev, mat: 10, freq: M, name: Austria 10-year (monthly)}
+    - {id: IE_10Y_M, src: ecb, key: IRS/M.IE.L.L40.CI.0000.EUR.N.Z, ccy: EUR, venue: MONTHLY, liq: govt_dev, mat: 10, freq: M, name: Ireland 10-year (monthly)}
+
+  corporate:
+    - {id: MOODY_AAA, src: fred_vendor, key: DAAA, ccy: USD, venue: US, liq: index, name: Moody's seasoned Aaa corporate yield}
+    - {id: MOODY_BAA, src: fred_vendor, key: DBAA, ccy: USD, venue: US, liq: index, name: Moody's seasoned Baa corporate yield}
+    - {id: ICE_IG_OAS, src: fred_vendor, key: BAMLC0A0CM, ccy: USD, venue: US, liq: index, name: ICE BofA US Corporate OAS (last 3 years)}
+    - {id: ICE_HY_OAS, src: fred_vendor, key: BAMLH0A0HYM2, ccy: USD, venue: US, liq: index, name: ICE BofA US High Yield OAS (last 3 years)}
+    - {id: HQM_2Y,  src: fred_ust, key: HQMCB2YR,  ccy: USD, venue: MONTHLY, liq: index, mat: 2,  freq: M, name: Treasury HQM corporate 2-year spot (monthly)}
+    - {id: HQM_5Y,  src: fred_ust, key: HQMCB5YR,  ccy: USD, venue: MONTHLY, liq: index, mat: 5,  freq: M, name: Treasury HQM corporate 5-year spot (monthly)}
+    - {id: HQM_10Y, src: fred_ust, key: HQMCB10YR, ccy: USD, venue: MONTHLY, liq: index, mat: 10, freq: M, name: Treasury HQM corporate 10-year spot (monthly)}
+    - {id: HQM_30Y, src: fred_ust, key: HQMCB30YR, ccy: USD, venue: MONTHLY, liq: index, mat: 30, freq: M, name: Treasury HQM corporate 30-year spot (monthly)}
+    - {id: GS10_M, src: fred_fed, key: GS10, ccy: USD, venue: MONTHLY, liq: index, mat: 10, freq: M, name: US Treasury 10-year CMT (monthly average)}
+    - {id: GS2_M,  src: fred_fed, key: GS2,  ccy: USD, venue: MONTHLY, liq: index, mat: 2,  freq: M, name: US Treasury 2-year CMT (monthly average)}
+    - {id: GS5_M,  src: fred_fed, key: GS5,  ccy: USD, venue: MONTHLY, liq: index, mat: 5,  freq: M, name: US Treasury 5-year CMT (monthly average)}
+    - {id: GS30_M, src: fred_fed, key: GS30, ccy: USD, venue: MONTHLY, liq: index, mat: 30, freq: M, name: US Treasury 30-year CMT (monthly average)}
+
+  rates:
+    # Money-market and funding rates (percent). Inputs for carry / funding legs; mostly not traded directly.
+    - {id: SOFR,  src: nyfed, key: secured/sofr, ccy: USD, venue: FIXING, liq: index, name: SOFR}
+    - {id: TGCR,  src: nyfed, key: secured/tgcr, ccy: USD, venue: FIXING, liq: index, name: Tri-party general collateral rate}
+    - {id: BGCR,  src: nyfed, key: secured/bgcr, ccy: USD, venue: FIXING, liq: index, name: Broad general collateral rate}
+    - {id: EFFR,  src: fred_nyfed, key: EFFR, ccy: USD, venue: FIXING, liq: index, name: Effective fed funds rate}
+    - {id: IORB,  src: fred_fed, key: IORB, ccy: USD, venue: FIXING, liq: index, name: Interest on reserve balances}
+    - {id: IOER,  src: fred_fed, key: IOER, ccy: USD, venue: FIXING, liq: index, name: Interest on excess reserves (to 2021-07)}
+    - {id: TBILL_3M, src: fred_fed, key: DTB3, ccy: USD, venue: UST, liq: index, name: 3-month T-bill (secondary market, discount)}
+    - {id: CP_FIN_3M, src: fred_fed, key: DCPF3M, ccy: USD, venue: FIXING, liq: index, name: 90-day AA financial commercial paper}
+    - {id: CP_NONFIN_3M, src: fred_fed, key: DCPN3M, ccy: USD, venue: FIXING, liq: index, name: 90-day AA nonfinancial commercial paper}
+    - {id: ESTR,  src: ecb, key: EST/B.EU000A2X2A25.WT, ccy: EUR, venue: FIXING, liq: index, name: Euro short-term rate}
+    - {id: SONIA, src: fred_boe, key: IUDSOIA, ccy: GBP, venue: FIXING, liq: index, name: SONIA}
+    - {id: CORRA, src: boc, key: AVG.INTWO, ccy: CAD, venue: FIXING, liq: index, name: CORRA}
+    - {id: RATE3M_USD, src: fred_oecd, key: IR3TIB01USM156N, ccy: USD, venue: MONTHLY, liq: index, freq: M, name: US 3-month interbank (OECD)}
+    - {id: RATE3M_EUR, src: fred_oecd, key: IR3TIB01EZM156N, ccy: EUR, venue: MONTHLY, liq: index, freq: M, name: Euro area 3-month interbank (OECD)}
+    - {id: RATE3M_JPY, src: fred_oecd, key: IR3TIB01JPM156N, ccy: JPY, venue: MONTHLY, liq: index, freq: M, name: Japan 3-month interbank (OECD)}
+    - {id: RATE3M_GBP, src: fred_oecd, key: IR3TIB01GBM156N, ccy: GBP, venue: MONTHLY, liq: index, freq: M, name: UK 3-month interbank (OECD)}
+    - {id: RATE3M_CHF, src: fred_oecd, key: IR3TIB01CHM156N, ccy: CHF, venue: MONTHLY, liq: index, freq: M, name: Switzerland 3-month interbank (OECD)}
+    - {id: RATE3M_CAD, src: fred_oecd, key: IR3TIB01CAM156N, ccy: CAD, venue: MONTHLY, liq: index, freq: M, name: Canada 3-month interbank (OECD)}
+    - {id: RATE3M_AUD, src: fred_oecd, key: IR3TIB01AUM156N, ccy: AUD, venue: MONTHLY, liq: index, freq: M, name: Australia 3-month interbank (OECD)}
+    - {id: RATE3M_NZD, src: fred_oecd, key: IR3TIB01NZM156N, ccy: NZD, venue: MONTHLY, liq: index, freq: M, name: New Zealand 3-month interbank (OECD)}
+    - {id: RATE3M_SEK, src: fred_oecd, key: IR3TIB01SEM156N, ccy: SEK, venue: MONTHLY, liq: index, freq: M, name: Sweden 3-month interbank (OECD)}
+    - {id: RATE3M_NOK, src: fred_oecd, key: IR3TIB01NOM156N, ccy: NOK, venue: MONTHLY, liq: index, freq: M, name: Norway 3-month interbank (OECD)}
+    - {id: RATE3M_DKK, src: fred_oecd, key: IR3TIB01DKM156N, ccy: DKK, venue: MONTHLY, liq: index, freq: M, name: Denmark 3-month interbank (OECD)}
+    - {id: RATE3M_MXN, src: fred_oecd, key: IR3TIB01MXM156N, ccy: MXN, venue: MONTHLY, liq: index, freq: M, name: Mexico 3-month interbank (OECD)}
+    - {id: RATE3M_ZAR, src: fred_oecd, key: IR3TIB01ZAM156N, ccy: ZAR, venue: MONTHLY, liq: index, freq: M, name: South Africa 3-month interbank (OECD)}
+    - {id: RATE3M_KRW, src: fred_oecd, key: IR3TIB01KRM156N, ccy: KRW, venue: MONTHLY, liq: index, freq: M, name: Korea 3-month interbank (OECD)}
+
+# Live futures contracts for the current term-structure snapshot (Yahoo, vendor). Expired months are dropped.
+curve_snapshots:
+  CL: {exchange: NYM, months: 12, name: WTI crude}
+  NG: {exchange: NYM, months: 12, name: Henry Hub natural gas}
+  RB: {exchange: NYM, months: 6, name: RBOB gasoline}
+  HO: {exchange: NYM, months: 6, name: NY Harbor ULSD}
+  ES: {exchange: CME, months: 3, quarterly: true, name: E-mini S&P 500}
+  GC: {exchange: CMX, months: 6, bimonthly: true, name: Gold}

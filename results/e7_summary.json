@@ -1,0 +1,198 @@
+{
+ "fx_triangle": {
+  "TRI_EURJPY": {
+   "same_close_sharpe": 3.300136053436444,
+   "next_close_sharpe": -0.433159472296409,
+   "spread_sd_bp": 37.006894575091586,
+   "half_life": Infinity
+  },
+  "TRI_EURGBP": {
+   "same_close_sharpe": 3.2291092758066835,
+   "next_close_sharpe": -0.3620222063412728,
+   "spread_sd_bp": 26.068377621355324,
+   "half_life": Infinity
+  },
+  "TRI_EURCHF": {
+   "same_close_sharpe": 2.9735852752956973,
+   "next_close_sharpe": -0.15400582264646542,
+   "spread_sd_bp": 19.838362392443617,
+   "half_life": 0.23852852942555192
+  }
+ },
+ "adr_timing": {
+  "asia_median_corr": 0.5512244265203237,
+  "europe_median_corr": 0.2737559664828184,
+  "same_close_median_sharpe": 2.1698777101472557,
+  "next_close_median_sharpe": -0.28785034432398304,
+  "n": 45
+ },
+ "nav_staleness": {
+  "bond": {
+   "corr_prem_next_nav": 0.036,
+   "premium_sd_bp": 31.294,
+   "same_close_sharpe": -0.3,
+   "next_close_sharpe": -0.907
+  },
+  "bond_intl": {
+   "corr_prem_next_nav": 0.189,
+   "premium_sd_bp": 46.489,
+   "same_close_sharpe": 0.125,
+   "next_close_sharpe": -2.229
+  },
+  "commodity": {
+   "corr_prem_next_nav": 0.603,
+   "premium_sd_bp": 68.828,
+   "same_close_sharpe": 3.224,
+   "next_close_sharpe": -0.404
+  },
+  "equity": {
+   "corr_prem_next_nav": 0.015,
+   "premium_sd_bp": 12.913,
+   "same_close_sharpe": 1.204,
+   "next_close_sharpe": -0.526
+  },
+  "equity_intl": {
+   "corr_prem_next_nav": 0.372,
+   "premium_sd_bp": 74.819,
+   "same_close_sharpe": 2.778,
+   "next_close_sharpe": -0.086
+  }
+ },
+ "structural_premia": {
+  "ADR_TSM": {
+   "median_by_year_bp": {
+    "2015": 251.0,
+    "2016": 362.0,
+    "2017": 349.0,
+    "2018": 294.0,
+    "2019": 371.0,
+    "2020": 714.0,
+    "2021": 989.0,
+    "2022": 298.0,
+    "2023": 699.0,
+    "2024": 1526.0,
+    "2025": 2071.0,
+    "2026": 1379.0
+   },
+   "share_days_positive": 0.9563399907106364
+  },
+  "ADR_INFY": {
+   "median_by_year_bp": {
+    "2015": 136.0,
+    "2016": 288.0,
+    "2017": 174.0,
+    "2018": 125.0,
+    "2019": 64.0,
+    "2020": -10.0,
+    "2021": 24.0,
+    "2022": -57.0,
+    "2023": -32.0,
+    "2024": -37.0,
+    "2025": -19.0,
+    "2026": 31.0
+   },
+   "share_days_positive": 0.7178454192778275
+  },
+  "ADR_HDB": {
+   "median_by_year_bp": {
+    "2015": 1616.0,
+    "2016": 1911.0,
+    "2017": 1058.0,
+    "2018": 932.0,
+    "2019": 1185.0,
+    "2020": 870.0,
+    "2021": 1716.0,
+    "2022": 825.0,
+    "2023": 757.0,
+    "2024": 140.0,
+    "2025": 588.0,
+    "2026": 221.0
+   },
+   "share_days_positive": 0.8753684900098264
+  },
+  "ADR_IBN": {
+   "median_by_year_bp": {
+    "2015": 374.0,
+    "2016": -15.0,
+    "2017": -40.0,
+    "2018": -20.0,
+    "2019": -80.0,
+    "2020": 39.0,
+    "2021": 25.0,
+    "2022": 6.0,
+    "2023": 30.0,
+    "2024": -50.0,
+    "2025": -4.0,
+    "2026": -45.0
+   },
+   "share_days_positive": 0.6273641165445561
+  },
+  "DLC_RIO_L_RIO_AX": {
+   "median_by_year_bp": {
+    "2015": -96.0,
+    "2016": -1465.0,
+    "2017": -1288.0,
+    "2018": -1157.0,
+    "2019": -1666.0,
+    "2020": -1661.0,
+    "2021": -1054.0,
+    "2022": -1154.0,
+    "2023": -1653.0,
+    "2024": -2031.0,
+    "2025": -1949.0,
+    "2026": -2072.0
+   },
+   "share_days_positive": 0.3705485059353254
+  }
+ },
+ "wti_2020": {
+  "max_contango_bp": 4064.3222617193924,
+  "max_date": "2020-04-22",
+  "full_carry_bp_that_day": 286.22353746138964,
+  "days_above_full_carry_since_2000": 1833
+ },
+ "brk_bound": {
+  "band_bp": 6.5,
+  "share_days_below_minus_band": 0.2358146798542426,
+  "min_spread_bp": -191.91784839133751,
+  "min_date": "2020-03-13",
+  "median_spread_bp": 8.001289535643686,
+  "same_close_sharpe": 0.910895469687056,
+  "next_close_sharpe": -0.19213211914808628
+ },
+ "futures_basis": {
+  "BASIS_ES1": {
+   "mispricing_sd_bp": 16.291519288941206,
+   "daily_change_sd_bp": 22.379284503809345,
+   "half_life": 0.24150130436251296,
+   "same_close_sharpe": 1.754261538258555,
+   "next_close_sharpe": -0.0714097515718308
+  },
+  "BASIS_NQ1": {
+   "mispricing_sd_bp": 19.56677934270961,
+   "daily_change_sd_bp": 26.486441183230188,
+   "half_life": 0.27983143585603865,
+   "same_close_sharpe": 2.191124896313794,
+   "next_close_sharpe": -0.00044087049678792064
+  },
+  "BASIS_RTY1": {
+   "mispricing_sd_bp": 21.57454649221165,
+   "daily_change_sd_bp": 30.112521380056624,
+   "half_life": 0.19063017949798675,
+   "same_close_sharpe": 1.4177365337337469,
+   "next_close_sharpe": -0.2961111924375966
+  },
+  "BASIS_YM1": {
+   "mispricing_sd_bp": 16.921154371121155,
+   "daily_change_sd_bp": 21.726379163064607,
+   "half_life": 0.3988820012842556,
+   "same_close_sharpe": 1.7532403995104069,
+   "next_close_sharpe": -0.04667070628308467
+  }
+ },
+ "interlisted": {
+  "same_close_median": 2.3314829813490365,
+  "next_close_median": -0.6173572283518217,
+  "n": 12
+ }
+}

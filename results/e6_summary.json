@@ -1,0 +1,12 @@
+{
+ "n": 88,
+ "median_sharpe": {
+  "bayes": -0.053,
+  "none": -0.1,
+  "regime": -0.05
+ },
+ "regime_minus_none_median": 0.016277715730331523,
+ "bayes_minus_none_median": 0.018400652767022366,
+ "regime_better_share": 0.5568181818181818,
+ "bayes_better_share": 0.5568181818181818
+}

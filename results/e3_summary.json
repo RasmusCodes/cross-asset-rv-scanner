@@ -1,0 +1,23 @@
+{
+ "n_tested": 181,
+ "raw_p_lt_005": 10,
+ "bh_q_lt_005": 0,
+ "bh_q_lt_010": 0,
+ "bonf_lt_005": 0,
+ "expected_false_raw": 9.05,
+ "reality_check": {
+  "best": "CARRY_DKK",
+  "pvalue": 0.27,
+  "K": 174,
+  "T": 3916
+ },
+ "deflated_sharpe_best": {
+  "sr_annual": 0.7213293315823732,
+  "sr0_annual": 1.963150210848061,
+  "psr": 0.9979192711228208,
+  "dsr": 4.0397835778926246e-07,
+  "n": 3916
+ },
+ "n_trials_assumed": 543,
+ "survivors_bh_010": []
+}
